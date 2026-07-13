@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Slides" | "Planilha">("Dossiê");
+  const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Slides" | "Planilha" | null>("Dossiê");
   const [isSimulating, setIsSimulating] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -93,11 +93,6 @@ export default function Home() {
                     placeholder="Peça para o Nivi analisar o crédito de..."
                     className="w-full bg-transparent border-none resize-none focus:outline-none min-h-[80px] text-lg font-sans placeholder:text-muted-foreground/60 text-foreground"
                   />
-                  {attachments.length === 0 && (
-                    <p className="text-xs text-left text-muted-foreground/70 font-sans pb-1 -mt-1">
-                      Anexe balanço, DRE, extratos ou outros documentos da empresa para uma análise mais precisa.
-                    </p>
-                  )}
                   {attachments.length > 0 && (
                     <div className="flex flex-wrap gap-2 pb-1">
                       {attachments.map((file, index) => (
@@ -148,7 +143,7 @@ export default function Home() {
                     return (
                       <button
                         key={format}
-                        onClick={() => setSelectedFormat(format)}
+                        onClick={() => setSelectedFormat((prev) => (prev === format ? null : format))}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${
                           isSelected 
                             ? "bg-primary text-primary-foreground font-medium shadow-sm" 
