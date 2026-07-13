@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, FileText, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle } from "lucide-react";
+import { Search, FileText, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle, Users, PenLine, Gavel } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -442,29 +442,35 @@ export default function Home() {
 
       {/* Outputs Formats */}
       <section className="py-24 bg-card border-y border-border/50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-primary leading-tight">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-2xl mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif text-primary leading-tight mb-4">
               Projetada para toda a equipe de crédito
             </h2>
+            <p className="text-muted-foreground font-sans">
+              Cada função enxerga a Nivi de um ângulo diferente — mas todos partem da mesma fonte de verdade.
+            </p>
           </div>
 
-          <div className="space-y-10">
+          <div className="grid md:grid-cols-3 gap-px bg-border/40 rounded-lg overflow-hidden border border-border/40">
             {[
               {
-                title: "Para Gerentes e Diretores",
-                desc: "Valide análises instantaneamente, estresse premissas e tenha uma visão unificada do risco do portfólio — sem vasculhar planilhas.",
-                accent: "border-primary"
+                icon: Users,
+                num: "01",
+                title: "Gerentes e Diretores",
+                desc: "Valide análises instantaneamente, estresse premissas e tenha uma visão unificada do risco do portfólio — sem vasculhar planilhas."
               },
               {
-                title: "Para Analistas Júnior",
-                desc: "Acelere o planilhamento. Deixe a Nivi extrair os dados para que você possa se concentrar em escrever o memorando de crédito.",
-                accent: "border-primary/50"
+                icon: PenLine,
+                num: "02",
+                title: "Analistas Júnior",
+                desc: "Acelere o planilhamento. Deixe a Nivi extrair os dados para que você possa se concentrar em escrever o memorando de crédito."
               },
               {
-                title: "Para Comitês de Crédito",
-                desc: "Receba o parecer consolidado com demonstrativos padronizados, índices calculados e alertas — tudo rastreável à fonte documental.",
-                accent: "border-primary/25"
+                icon: Gavel,
+                num: "03",
+                title: "Comitês de Crédito",
+                desc: "Receba o parecer consolidado com demonstrativos padronizados, índices calculados e alertas — tudo rastreável à fonte documental."
               }
             ].map((item, i) => (
               <motion.div
@@ -473,10 +479,16 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className={`border-l-2 ${item.accent} pl-6`}
+                className="group relative bg-background p-8 flex flex-col hover:bg-muted/20 transition-colors"
               >
-                <h3 className="font-serif text-xl text-primary mb-2">{item.title}</h3>
-                <p className="text-muted-foreground font-sans leading-relaxed">
+                <span className="font-serif text-5xl text-primary/10 group-hover:text-primary/15 transition-colors absolute top-6 right-6 select-none">
+                  {item.num}
+                </span>
+                <div className="w-11 h-11 rounded-full bg-primary/5 border border-primary/15 flex items-center justify-center mb-6 group-hover:bg-primary/10 group-hover:border-primary/25 transition-colors">
+                  <item.icon className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-serif text-lg text-primary mb-2">Para {item.title}</h3>
+                <p className="text-sm text-muted-foreground font-sans leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
