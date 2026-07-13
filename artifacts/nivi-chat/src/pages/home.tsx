@@ -93,6 +93,11 @@ export default function Home() {
                     placeholder="Peça para o Nivi analisar o crédito de..."
                     className="w-full bg-transparent border-none resize-none focus:outline-none min-h-[80px] text-lg font-sans placeholder:text-muted-foreground/60 text-foreground"
                   />
+                  {attachments.length === 0 && (
+                    <p className="text-xs text-left text-muted-foreground/70 font-sans pb-1 -mt-1">
+                      Anexe balanço, DRE, extratos ou outros documentos da empresa para uma análise mais precisa.
+                    </p>
+                  )}
                   {attachments.length > 0 && (
                     <div className="flex flex-wrap gap-2 pb-1">
                       {attachments.map((file, index) => (
@@ -120,8 +125,9 @@ export default function Home() {
               {/* Output Selectors */}
               <div className="px-4 py-3 border-t border-border/50 bg-muted/20 flex items-center justify-between rounded-b-lg">
                 <div className="flex items-center gap-2">
-                  <label className="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer mr-1">
+                  <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border/60 text-sm text-muted-foreground hover:bg-muted hover:text-foreground hover:border-border transition-colors cursor-pointer mr-2">
                     <Paperclip className="w-4 h-4" />
+                    Anexar documentos
                     <input
                       type="file"
                       multiple
