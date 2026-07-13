@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, FileText, Presentation, Table, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X } from "lucide-react";
+import { Search, FileText, Presentation, Table, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -230,71 +230,114 @@ export default function Home() {
 
       {/* Feature Deep Dive */}
       <section className="py-32 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-3xl md:text-4xl font-serif text-primary mb-6">
-                O dossiê que você leria.<br />Escrito antes de você pedir.
-              </h2>
-              <p className="text-muted-foreground font-sans text-lg mb-8 leading-relaxed">
-                Nivi ingere PDFs extensos, planilhas despadronizadas e extratos bancários. Em minutos, estrutura o racional de crédito sob as lentes do seu comitê de risco.
-              </p>
-              
-              <ul className="space-y-4">
-                {[
-                  "Análise horizontal e vertical de DRE",
-                  "Cálculo de covenants e índices de liquidez",
-                  "Apontamentos restritivos (Serasa, Bacen, SCR)",
-                  "Projeção de capacidade de pagamento"
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-foreground">
-                    <CheckCircle2 className="w-5 h-5 text-primary/60" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="bg-card border border-border/60 rounded-xl p-8 shadow-sm relative"
-            >
-              <div className="absolute top-0 right-0 -mt-3 -mr-3 flex gap-2">
-                <span className="bg-background border border-border text-xs px-2 py-1 rounded shadow-sm text-muted-foreground">PDF</span>
-                <span className="bg-background border border-border text-xs px-2 py-1 rounded shadow-sm text-muted-foreground">XLSX</span>
-              </div>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-serif font-semibold text-lg text-primary">Risco de Liquidez</h4>
-                    <span className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-1 rounded">ALTO</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    A empresa apresenta descasamento no curto prazo. O índice de liquidez corrente caiu de 1.2 para 0.8 no último trimestre, pressionado por antecipação de recebíveis.
-                  </p>
-                </div>
-                <div className="h-px bg-border/50" />
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-serif font-semibold text-lg text-primary">Capacidade de Pagamento</h4>
-                    <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-1 rounded">ADEQUADO</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Apesar da pressão de liquidez, a margem EBITDA sustentada em 18% permite cobertura do serviço da dívida proposto com folga de 1.4x.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl md:text-4xl font-serif text-primary mb-6"
+          >
+            Uma conversa com os seus dados
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-muted-foreground font-sans text-lg leading-relaxed"
+          >
+            Carregue um balanço, um contrato de crédito ou demonstrativos trimestrais.<br />
+            A Nivi sintetiza números e contexto de forma instantânea.
+          </motion.p>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="max-w-3xl mx-auto bg-card border border-border/60 rounded-xl shadow-sm overflow-hidden"
+        >
+          {/* Chat header */}
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-border/50">
+            <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-sm">
+              N
+            </div>
+            <div>
+              <p className="text-sm font-medium text-foreground">Nivi</p>
+              <p className="text-xs text-primary flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />
+                Análise ativa
+              </p>
+            </div>
+          </div>
+
+          {/* Chat body */}
+          <div className="px-6 py-8 space-y-6">
+            {/* User message */}
+            <div className="flex justify-end">
+              <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
+                Pode analisar os demonstrativos do Q3 da Acme Corp? Preciso de um resumo de liquidez e serviço da dívida.
+              </div>
+            </div>
+
+            {/* Nivi response */}
+            <div className="flex gap-3">
+              <div className="w-7 h-7 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-xs">
+                N
+              </div>
+              <div className="space-y-4 w-full">
+                <div className="bg-muted/30 border border-border/50 rounded-lg px-4 py-3 text-sm leading-relaxed font-sans text-foreground">
+                  Revisei os demonstrativos do Q3/2023 da Acme Corp e o contrato de crédito fornecido. A receita cresceu 14% ao ano, atingindo R$ 42,5M, mas identifiquei dois fatores relevantes quanto à liquidez.
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="bg-card border border-border/60 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-600" />
+                      <span className="text-sm font-medium text-amber-700">Compressão de Liquidez</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Índice de liquidez corrente caiu de 1,5x para 1,1x. Prazo médio de pagamento ampliado para 65 dias (era 45 dias no Q2).
+                    </p>
+                  </div>
+                  <div className="bg-card border border-border/60 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">Cobertura do Serviço da Dívida</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      DSCR mantém-se saudável em 1,45x, sustentado por margem EBITDA de 22% e redução do capex.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Follow-up user message */}
+            <div className="flex justify-end">
+              <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
+                O que está puxando o alongamento de prazo de fornecedores? Estão preservando caixa?
+              </div>
+            </div>
+          </div>
+
+          {/* Chat input */}
+          <div className="px-6 py-4 border-t border-border/50 bg-muted/20 flex items-center gap-3">
+            <input
+              disabled
+              placeholder="Faça uma pergunta de acompanhamento..."
+              className="w-full bg-transparent border-none focus:outline-none text-sm font-sans placeholder:text-muted-foreground/60 text-foreground"
+            />
+            <button
+              disabled
+              className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center opacity-70 flex-shrink-0"
+              aria-label="Enviar"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </motion.div>
       </section>
 
       {/* Outputs Formats */}
