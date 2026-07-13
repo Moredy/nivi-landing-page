@@ -22,10 +22,14 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/40">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="font-serif text-2xl tracking-tighter text-primary font-medium">Nivi</div>
+          <div className="flex items-center gap-8">
+            <div className="font-serif text-2xl tracking-tighter text-primary font-medium">Nivi</div>
+            <div className="flex items-center gap-6 text-sm">
+              <button className="text-muted-foreground hover:text-foreground transition-colors">Manifesto</button>
+              <button className="text-muted-foreground hover:text-foreground transition-colors">Segurança</button>
+            </div>
+          </div>
           <div className="flex items-center gap-6 text-sm">
-            <button className="text-muted-foreground hover:text-foreground transition-colors">Manifesto</button>
-            <button className="text-muted-foreground hover:text-foreground transition-colors">Segurança</button>
             <button className="h-9 px-4 text-foreground font-medium hover:text-primary transition-colors">
               Entrar
             </button>
