@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, FileText, Presentation, Table, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -8,6 +8,22 @@ export default function Home() {
   const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Livre" | null>("Livre");
   const [isSimulating, setIsSimulating] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [chatStep, setChatStep] = useState(0);
+  const chatStarted = useRef(false);
+
+  const startChatSequence = () => {
+    if (chatStarted.current) return;
+    chatStarted.current = true;
+    const timers = [
+      setTimeout(() => setChatStep(1), 300),   // user message 1
+      setTimeout(() => setChatStep(2), 1300),  // typing indicator
+      setTimeout(() => setChatStep(3), 3000),  // nivi response
+      setTimeout(() => setChatStep(4), 3900),  // insight cards
+      setTimeout(() => setChatStep(5), 5200),  // typing indicator (user)
+      setTimeout(() => setChatStep(6), 6000),  // user message 2
+    ];
+    return () => timers.forEach(clearTimeout);
+  };
 
   const handleSimulate = () => {
     if (!prompt && attachments.length === 0) return;
@@ -257,6 +273,7 @@ export default function Home() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.15 }}
+          onViewportEnter={startChatSequence}
           className="max-w-3xl mx-auto bg-card border border-border/60 rounded-xl shadow-sm overflow-hidden"
         >
           {/* Chat header */}
@@ -274,52 +291,135 @@ export default function Home() {
           </div>
 
           {/* Chat body */}
-          <div className="px-6 py-8 space-y-6">
+          <div className="px-6 py-8 space-y-6 min-h-[420px]">
             {/* User message */}
-            <div className="flex justify-end">
-              <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
-                Pode analisar os demonstrativos do Q3 da Acme Corp? Preciso de um resumo de liquidez e serviço da dívida.
-              </div>
-            </div>
+            <AnimatePresence>
+              {chatStep >= 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex justify-end"
+                >
+                  <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
+                    Pode analisar os demonstrativos do Q3 da Acme Corp? Preciso de um resumo de liquidez e serviço da dívida.
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Typing indicator (Nivi) */}
+            <AnimatePresence>
+              {chatStep === 2 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex gap-3"
+                >
+                  <div className="w-7 h-7 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-xs">
+                    N
+                  </div>
+                  <div className="bg-muted/30 border border-border/50 rounded-lg px-4 py-3 flex items-center gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <motion.span
+                        key={i}
+                        className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60"
+                        animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
+                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Nivi response */}
-            <div className="flex gap-3">
-              <div className="w-7 h-7 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-xs">
-                N
-              </div>
-              <div className="space-y-4 w-full">
-                <div className="bg-muted/30 border border-border/50 rounded-lg px-4 py-3 text-sm leading-relaxed font-sans text-foreground">
-                  Revisei os demonstrativos do Q3/2023 da Acme Corp e o contrato de crédito fornecido. A receita cresceu 14% ao ano, atingindo R$ 42,5M, mas identifiquei dois fatores relevantes quanto à liquidez.
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div className="bg-card border border-border/60 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <AlertTriangle className="w-4 h-4 text-amber-600" />
-                      <span className="text-sm font-medium text-amber-700">Compressão de Liquidez</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Índice de liquidez corrente caiu de 1,5x para 1,1x. Prazo médio de pagamento ampliado para 65 dias (era 45 dias no Q2).
-                    </p>
+            <AnimatePresence>
+              {chatStep >= 3 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex gap-3"
+                >
+                  <div className="w-7 h-7 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-xs">
+                    N
                   </div>
-                  <div className="bg-card border border-border/60 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">Cobertura do Serviço da Dívida</span>
+                  <div className="space-y-4 w-full">
+                    <div className="bg-muted/30 border border-border/50 rounded-lg px-4 py-3 text-sm leading-relaxed font-sans text-foreground">
+                      Revisei os demonstrativos do Q3/2023 da Acme Corp e o contrato de crédito fornecido. A receita cresceu 14% ao ano, atingindo R$ 42,5M, mas identifiquei dois fatores relevantes quanto à liquidez.
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      DSCR mantém-se saudável em 1,45x, sustentado por margem EBITDA de 22% e redução do capex.
-                    </p>
+                    {chatStep >= 4 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="grid sm:grid-cols-2 gap-3"
+                      >
+                        <div className="bg-card border border-border/60 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertTriangle className="w-4 h-4 text-amber-600" />
+                            <span className="text-sm font-medium text-amber-700">Compressão de Liquidez</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            Índice de liquidez corrente caiu de 1,5x para 1,1x. Prazo médio de pagamento ampliado para 65 dias (era 45 dias no Q2).
+                          </p>
+                        </div>
+                        <div className="bg-card border border-border/60 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <CheckCircle className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-medium text-primary">Cobertura do Serviço da Dívida</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            DSCR mantém-se saudável em 1,45x, sustentado por margem EBITDA de 22% e redução do capex.
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Typing indicator (user) */}
+            <AnimatePresence>
+              {chatStep === 5 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex justify-end"
+                >
+                  <div className="bg-primary rounded-lg px-4 py-3 flex items-center gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <motion.span
+                        key={i}
+                        className="w-1.5 h-1.5 rounded-full bg-primary-foreground/70"
+                        animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
+                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Follow-up user message */}
-            <div className="flex justify-end">
-              <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
-                O que está puxando o alongamento de prazo de fornecedores? Estão preservando caixa?
-              </div>
-            </div>
+            <AnimatePresence>
+              {chatStep >= 6 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex justify-end"
+                >
+                  <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
+                    O que está puxando o alongamento de prazo de fornecedores? Estão preservando caixa?
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Chat input */}
