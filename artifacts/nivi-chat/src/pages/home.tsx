@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Slides" | "Planilha" | null>("Dossiê");
+  const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Livre" | null>("Livre");
   const [isSimulating, setIsSimulating] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -132,11 +132,10 @@ export default function Home() {
                     />
                   </label>
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mr-2">Formato:</span>
-                  {(["Dossiê", "Slides", "Planilha"] as const).map((format) => {
+                  {(["Livre", "Dossiê"] as const).map((format) => {
                     const icons = {
+                      "Livre": Search,
                       "Dossiê": FileText,
-                      "Slides": Presentation,
-                      "Planilha": Table
                     };
                     const Icon = icons[format];
                     const isSelected = selectedFormat === format;
