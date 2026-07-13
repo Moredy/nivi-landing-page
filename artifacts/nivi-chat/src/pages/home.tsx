@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, FileText, Presentation, Table, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock } from "lucide-react";
+import { Search, FileText, Presentation, Table, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -7,14 +7,27 @@ export default function Home() {
   const [isFocused, setIsFocused] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Slides" | "Planilha">("Dossiê");
   const [isSimulating, setIsSimulating] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
 
   const handleSimulate = () => {
-    if (!prompt) return;
+    if (!prompt && attachments.length === 0) return;
     setIsSimulating(true);
     setTimeout(() => {
       setIsSimulating(false);
       setPrompt("");
+      setAttachments([]);
     }, 2500);
+  };
+
+  const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    setAttachments((prev) => [...prev, ...Array.from(files)]);
+    e.target.value = "";
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -71,19 +84,52 @@ export default function Home() {
             >
               <div className="p-4 flex items-start gap-3">
                 <Search className={`w-5 h-5 mt-1 transition-colors ${isFocused ? "text-primary" : "text-muted-foreground"}`} />
-                <textarea
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  placeholder="Peça para o Nivi analisar o crédito de..."
-                  className="w-full bg-transparent border-none resize-none focus:outline-none min-h-[80px] text-lg font-sans placeholder:text-muted-foreground/60 text-foreground"
-                />
+                <div className="w-full">
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder="Peça para o Nivi analisar o crédito de..."
+                    className="w-full bg-transparent border-none resize-none focus:outline-none min-h-[80px] text-lg font-sans placeholder:text-muted-foreground/60 text-foreground"
+                  />
+                  {attachments.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pb-1">
+                      {attachments.map((file, index) => (
+                        <span
+                          key={`${file.name}-${index}`}
+                          className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-md bg-muted/40 border border-border/50 text-sm text-foreground font-sans"
+                        >
+                          <FileText className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span className="max-w-[160px] truncate">{file.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => removeAttachment(index)}
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={`Remover ${file.name}`}
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Output Selectors */}
               <div className="px-4 py-3 border-t border-border/50 bg-muted/20 flex items-center justify-between rounded-b-lg">
                 <div className="flex items-center gap-2">
+                  <label className="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer mr-1">
+                    <Paperclip className="w-4 h-4" />
+                    <input
+                      type="file"
+                      multiple
+                      onChange={handleAttach}
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg"
+                    />
+                  </label>
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mr-2">Formato:</span>
                   {(["Dossiê", "Slides", "Planilha"] as const).map((format) => {
                     const icons = {
@@ -112,7 +158,7 @@ export default function Home() {
 
                 <button 
                   onClick={handleSimulate}
-                  disabled={!prompt || isSimulating}
+                  disabled={(!prompt && attachments.length === 0) || isSimulating}
                   className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-all disabled:cursor-not-allowed"
                 >
                   {isSimulating ? (
