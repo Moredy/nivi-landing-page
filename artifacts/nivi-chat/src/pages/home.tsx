@@ -26,8 +26,11 @@ export default function Home() {
           <div className="flex items-center gap-6 text-sm">
             <button className="text-muted-foreground hover:text-foreground transition-colors">Manifesto</button>
             <button className="text-muted-foreground hover:text-foreground transition-colors">Segurança</button>
+            <button className="h-9 px-4 text-foreground font-medium hover:text-primary transition-colors">
+              Entrar
+            </button>
             <button className="h-9 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
-              Solicitar Acesso
+              Criar Conta
             </button>
           </div>
         </div>
@@ -314,13 +317,18 @@ export default function Home() {
       {/* CTA */}
       <section className="py-24 bg-primary text-primary-foreground text-center">
         <div className="max-w-3xl mx-auto px-6 space-y-8">
-          <h2 className="text-4xl font-serif">Eleve o rigor. Reduza a espera.</h2>
+          <h2 className="text-4xl font-serif text-primary-foreground">Eleve o rigor. Reduza a espera.</h2>
           <p className="text-primary-foreground/80 font-sans text-lg max-w-xl mx-auto">
             Abra vagas para acesso antecipado limitadas. Selecionamos parceiros que processam alto volume de esteira de crédito.
           </p>
-          <button className="bg-background text-primary px-8 py-4 rounded-md font-medium hover:bg-background/90 transition-colors inline-flex items-center gap-2">
-            Solicitar Acesso <ChevronRight className="w-4 h-4" />
-          </button>
+          <div className="flex items-center justify-center gap-4">
+            <button className="border border-primary-foreground/30 text-primary-foreground px-8 py-4 rounded-md font-medium hover:bg-primary-foreground/10 transition-colors">
+              Entrar
+            </button>
+            <button className="bg-background text-primary px-8 py-4 rounded-md font-medium hover:bg-background/90 transition-colors inline-flex items-center gap-2">
+              Criar Conta <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </section>
 
