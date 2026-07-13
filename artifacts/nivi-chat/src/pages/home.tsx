@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, FileText, Presentation, Table, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle } from "lucide-react";
+import { Search, FileText, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -442,45 +442,42 @@ export default function Home() {
 
       {/* Outputs Formats */}
       <section className="py-24 bg-card border-y border-border/50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-serif text-primary mb-4">Saídas preparadas para o comitê</h2>
-            <p className="text-muted-foreground font-sans">
-              O trabalho de análise não termina na conclusão. Termina na apresentação.
-              Nivi entrega no formato que o seu processo exige.
-            </p>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif text-primary leading-tight">
+              Projetada para toda a equipe de crédito
+            </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="space-y-10">
             {[
               {
-                icon: FileText,
-                title: "Dossiê Executivo",
-                desc: "Documento textual longo, parágrafos densos, focado no racional de decisão. Ideal para registro formal e auditoria."
+                title: "Para Gerentes e Diretores",
+                desc: "Valide análises instantaneamente, estresse premissas e tenha uma visão unificada do risco do portfólio — sem vasculhar planilhas.",
+                accent: "border-primary"
               },
               {
-                icon: Presentation,
-                title: "Slides Resumo",
-                desc: "Bullet points, gráficos de tendência e destaques visuais. Formatado para defesa rápida em comitê de crédito."
+                title: "Para Analistas Júnior",
+                desc: "Acelere o planilhamento. Deixe a Nivi extrair os dados para que você possa se concentrar em escrever o memorando de crédito.",
+                accent: "border-primary/50"
               },
               {
-                icon: Table,
-                title: "Planilha de Covenants",
-                desc: "Dados extraídos e estruturados em células, prontos para integração no seu modelo interno de rating."
+                title: "Para Comitês de Crédito",
+                desc: "Receba o parecer consolidado com demonstrativos padronizados, índices calculados e alertas — tudo rastreável à fonte documental.",
+                accent: "border-primary/25"
               }
-            ].map((format, i) => (
-              <motion.div 
+            ].map((item, i) => (
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group p-6 rounded-lg border border-border/40 hover:border-primary/20 bg-background transition-colors hover:shadow-sm"
+                className={`border-l-2 ${item.accent} pl-6`}
               >
-                <format.icon className="w-8 h-8 text-primary/40 mb-4 group-hover:text-primary transition-colors" />
-                <h3 className="font-serif text-lg text-primary mb-2">{format.title}</h3>
-                <p className="text-sm text-muted-foreground font-sans leading-relaxed">
-                  {format.desc}
+                <h3 className="font-serif text-xl text-primary mb-2">{item.title}</h3>
+                <p className="text-muted-foreground font-sans leading-relaxed">
+                  {item.desc}
                 </p>
               </motion.div>
             ))}
