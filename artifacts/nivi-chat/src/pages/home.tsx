@@ -1,643 +1,529 @@
-import { useState, useEffect, useRef } from "react";
-import { Search, FileText, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle, Users, PenLine, Gavel } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  BarChart3,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  FileCheck2,
+  FileText,
+  Inbox,
+  Lock,
+  Plus,
+  Search,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { motion } from "framer-motion";
 
-const PLACEHOLDER_SUGGESTIONS = [
-  "Gere um relatório simples da empresa ACME S.A. (CNPJ 12.345.678/0001-90)",
-  "Faça um resumo rápido da situação financeira da empresa Beta Ltda.",
-  "Explique em linguagem simples os principais riscos do CNPJ 98.765.432/0001-10",
-  "Busque sinais de fraude cruzando documentos, SCR e processos do CNPJ 12.345.678/0001-90",
-  "Relacione certidões, ações judiciais e alertas de compliance do CPF 123.456.789-09",
-  "Cruze balanço e DRE com SCR para estimar risco de crédito do CNPJ 98.765.432/0001-10",
-  "Confronte contratos e garantias com dívida pública e passivos do CNPJ 45.678.901/0001-55",
-  "Compare bases processuais, protestos e compliance para detectar fraude no CPF 987.654.321-00",
-  "Identifique inconsistências entre demonstrativos e dados externos do CNPJ 23.456.789/0001-11",
+const partnerLogos = ["Atlas Bank", "Cora", "Monet", "Aster", "Nexo", "Vértice"];
+
+const inboxItems = [
+  {
+    title: "Dossiê Acme S.A.",
+    time: "2 min",
+    copy: "Liquidez corrente caiu para 1,1x; DSCR segue saudável em 1,45x.",
+    owner: "Nivi",
+    active: true,
+  },
+  {
+    title: "Risco cruzado Beta Ltda.",
+    time: "16 min",
+    copy: "Inconsistência entre DRE, SCR e protestos recentes encontrada.",
+    owner: "Ana",
+  },
+  {
+    title: "Garantias Grupo Prisma",
+    time: "1 h",
+    copy: "Contratos anexados conferidos com certidões e passivos judiciais.",
+    owner: "Rui",
+  },
 ];
 
+const features = [
+  {
+    title: "Dossiê personalizado",
+    copy: "Você já tem todas as informações em um único documento de acordo com o padrão da instituição.",
+    visual: "workflow",
+  },
+  {
+    title: "Análise setorial",
+    copy: "Realize uma analise e comparação setorial da empresa a nível de mercado em segundos",
+    visual: "agent",
+  },
+  {
+    title: "Integração simples",
+    copy: "Integre diretamente com seu CRM ou ERP para trazer os demonstrativos financeiros direto para os estudos",
+    visual: "evidence",
+  },
+];
+
+const plans = [
+  {
+    name: "Starter",
+    price: "Sob convite",
+    period: "",
+    copy: "Para squads iniciando com IA em crédito.",
+    items: ["Até 2 esteiras", "Relatórios livres", "Upload de documentos", "Pareceres com fontes", "Suporte por email"],
+    highlighted: false,
+  },
+  {
+    name: "Growth",
+    price: "Piloto assistido",
+    period: "",
+    copy: "Para times com volume e colaboração diária.",
+    items: ["Tudo do Starter", "Dossiês padronizados", "Alertas de inconsistência", "Histórico auditável", "Fila colaborativa", "Onboarding guiado", "Relatórios gerenciais"],
+    highlighted: true,
+  },
+  {
+    name: "Pro",
+    price: "Customizado",
+    period: "",
+    copy: "Para instituições com governança e segurança avançadas.",
+    items: ["Tudo do Growth", "Ambiente dedicado", "SSO e controles LGPD", "Políticas customizadas", "Integrações internas", "Trilha de auditoria", "Suporte dedicado"],
+    highlighted: false,
+  },
+];
+
+const faqs = [
+  "A Nivi usa dados dos clientes para treinar modelos públicos?",
+  "Posso começar com um piloto pequeno antes de integrar sistemas?",
+  "Os relatórios mostram a fonte de cada conclusão?",
+  "Quais documentos posso analisar?",
+];
+
+function DashboardMockup() {
+  return (
+    <div className="w-full max-w-2xl overflow-hidden rounded-t-2xl border border-black/10 bg-white text-sm shadow-2xl">
+      <div className="flex h-[500px] flex-col sm:flex-row">
+        <aside className="hidden w-56 shrink-0 flex-col gap-6 border-r border-black/5 bg-[#FCFAFB] p-4 sm:flex">
+          <div className="flex items-center justify-between rounded-lg border border-black/10 bg-white p-2">
+            <span className="flex items-center gap-2 font-medium text-[#272125]">
+              <span className="flex h-5 w-5 items-center justify-center rounded bg-[#272125] text-xs text-white">N</span>
+              Nivi
+            </span>
+            <ChevronDown className="h-4 w-4 text-black/40" />
+          </div>
+
+          <div className="flex items-center gap-3 px-2 font-medium text-black/60">
+            <Search className="h-4 w-4" />
+            Buscar
+            <span className="ml-auto rounded border border-black/10 px-1.5 py-0.5 text-xs">⌘K</span>
+          </div>
+
+          <div className="space-y-1">
+            {[
+              { icon: Inbox, label: "Análises", count: "6", active: true },
+              { icon: Users, label: "Comitê", count: "10" },
+              { icon: Clock, label: "Pendentes", count: "3" },
+              { icon: FileText, label: "Rascunhos", count: "1" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className={`flex items-center gap-3 rounded-md px-2 py-1.5 font-medium ${item.active ? "bg-black/5 text-[#272125]" : "text-black/60"
+                  }`}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+                <span className="ml-auto text-xs text-black/50">{item.count}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4">
+            <div className="mb-2 px-2 text-xs font-medium text-black/40">Fontes</div>
+            <div className="space-y-2 px-2 font-medium text-black/60">
+              <div>Balanços</div>
+              <div>SCR</div>
+              <div>Certidões</div>
+              <div>Processos</div>
+            </div>
+          </div>
+        </aside>
+
+        <main className="flex min-w-0 flex-1 flex-col bg-white">
+          <div className="border-b border-black/5 p-4">
+            <div className="pb-4 text-base font-medium text-[#272125]">Fila de crédito</div>
+            <div className="flex gap-2">
+              <span className="rounded-full bg-[#272125] px-3 py-1 text-xs font-medium text-white">Em análise</span>
+              <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-black/60">Aprovação</span>
+            </div>
+          </div>
+
+          <div className="divide-y divide-black/10 p-6">
+            {inboxItems.map((item) => (
+              <div key={item.title} className="relative space-y-1 py-5 first:pt-0">
+                {item.active && <span className="absolute -left-3 top-6 h-1.5 w-1.5 rounded-full bg-[#5E7C8D]" />}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="font-medium text-[#272125]">{item.title}</div>
+                  <div className="whitespace-nowrap text-xs text-black/40">{item.time}</div>
+                </div>
+                <p className="line-clamp-2 leading-relaxed text-black/60">{item.copy}</p>
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-black/50">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[10px] font-medium text-[#272125]">
+                    {item.owner[0]}
+                  </span>
+                  <span className="font-medium text-black/80">{item.owner}</span> atualizou agora
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function FeatureVisual({ type }: { type: string }) {
+  if (type === "evidence") {
+    return (
+      <div className="grid h-full gap-3 bg-white p-5">
+        {["Balanço 2024", "DRE Q3", "Certidão Federal"].map((item, index) => (
+          <div key={item} className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FCFAFB] p-3">
+            <FileCheck2 className="h-5 w-5 text-[#5E7C8D]" />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-[#272125]">{item}</div>
+              <div className="mt-1 h-1.5 rounded-full bg-black/10">
+                <div className="h-full rounded-full bg-[#7A6470]" style={{ width: `${78 - index * 12}%` }} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (type === "agent") {
+    return (
+      <div className="flex h-full flex-col justify-end gap-3 bg-[#2C2428] p-5 text-sm">
+        <div className="max-w-[82%] rounded-2xl bg-white/10 p-3 text-white/80">Explique os riscos do CNPJ em 3 pontos.</div>
+        <div className="ml-auto max-w-[86%] rounded-2xl bg-white p-3 text-[#272125] shadow-sm">
+          Encontrei compressão de liquidez, concentração em fornecedor e passivo trabalhista relevante.
+        </div>
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-white/60">
+          <Sparkles className="h-4 w-4" />
+          Gerando dossiê...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full bg-white p-5">
+      <div className="grid h-full grid-cols-2 gap-3">
+        {[
+          { label: "Docs", icon: FileText },
+          { label: "Risco", icon: AlertTriangle },
+          { label: "Índices", icon: BarChart3 },
+          { label: "LGPD", icon: Lock },
+        ].map((item) => (
+          <div key={item.label} className="flex flex-col justify-between rounded-2xl border border-black/5 bg-[#FCFAFB] p-4">
+            <item.icon className="h-5 w-5 text-[#272125]/50" />
+            <span className="text-sm font-medium text-[#272125]">{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
-  const [prompt, setPrompt] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-  const [selectedFormat, setSelectedFormat] = useState<"Dossiê" | "Livre" | null>("Livre");
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [attachments, setAttachments] = useState<File[]>([]);
-  const [chatStep, setChatStep] = useState(0);
-  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
-  const [showPlaceholderCaret, setShowPlaceholderCaret] = useState(true);
-  const chatStarted = useRef(false);
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    if (prompt) {
-      setAnimatedPlaceholder("");
-      return;
-    }
-
-    const currentText = PLACEHOLDER_SUGGESTIONS[placeholderIndex];
-    const isTyping = !isDeletingPlaceholder;
-
-    const speed = isTyping ? 42 : 28;
-    const holdWhenComplete = 1200;
-    const holdWhenEmpty = 280;
-
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    if (isTyping && animatedPlaceholder.length < currentText.length) {
-      timeoutId = setTimeout(() => {
-        setAnimatedPlaceholder(currentText.slice(0, animatedPlaceholder.length + 1));
-      }, speed);
-    } else if (isTyping && animatedPlaceholder.length === currentText.length) {
-      timeoutId = setTimeout(() => {
-        setIsDeletingPlaceholder(true);
-      }, holdWhenComplete);
-    } else if (!isTyping && animatedPlaceholder.length > 0) {
-      timeoutId = setTimeout(() => {
-        setAnimatedPlaceholder(currentText.slice(0, animatedPlaceholder.length - 1));
-      }, speed);
-    } else {
-      timeoutId = setTimeout(() => {
-        setIsDeletingPlaceholder(false);
-        setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_SUGGESTIONS.length);
-      }, holdWhenEmpty);
-    }
-
-    return () => clearTimeout(timeoutId);
-  }, [animatedPlaceholder, isDeletingPlaceholder, placeholderIndex, prompt]);
-
-  useEffect(() => {
-    if (prompt) {
-      setShowPlaceholderCaret(false);
-      return;
-    }
-
-    const intervalId = setInterval(() => {
-      setShowPlaceholderCaret((prev) => !prev);
-    }, 500);
-
-    return () => clearInterval(intervalId);
-  }, [prompt]);
-
-  const startChatSequence = () => {
-    if (chatStarted.current) return;
-    chatStarted.current = true;
-    const timers = [
-      setTimeout(() => setChatStep(1), 300),   // user message 1
-      setTimeout(() => setChatStep(2), 1300),  // typing indicator
-      setTimeout(() => setChatStep(3), 3000),  // nivi response
-      setTimeout(() => setChatStep(4), 3900),  // insight cards
-      setTimeout(() => setChatStep(5), 5200),  // typing indicator (user)
-      setTimeout(() => setChatStep(6), 6000),  // user message 2
-    ];
-    return () => timers.forEach(clearTimeout);
-  };
-
-  const handleSimulate = () => {
-    if (!prompt && attachments.length === 0) return;
-    setIsSimulating(true);
-    setTimeout(() => {
-      setIsSimulating(false);
-      setPrompt("");
-      setAttachments([]);
-    }, 2500);
-  };
-
-  const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-    setAttachments((prev) => [...prev, ...Array.from(files)]);
-    e.target.value = "";
-  };
-
-  const removeAttachment = (index: number) => {
-    setAttachments((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleScrollToPrivacy = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    document.getElementById("sigilo-por-design")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
-  const handleScrollToAbout = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    document.getElementById("uma-conversa-com-os-seus-dados")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    setSubmitted(true);
+    setEmail("");
   };
 
   return (
-    <div className="min-h-screen bg-background selection:bg-primary/20">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/40">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <div className="font-serif text-2xl tracking-tighter text-primary font-medium">Nivi</div>
-            <div className="flex items-center gap-6 text-sm">
-              <a href="#uma-conversa-com-os-seus-dados" onClick={handleScrollToAbout} className="text-muted-foreground hover:text-foreground transition-colors">Sobre</a>
-              <a href="#sigilo-por-design" onClick={handleScrollToPrivacy} className="text-muted-foreground hover:text-foreground transition-colors">Privacidade</a>
-            </div>
-          </div>
-          <div className="flex items-center gap-6 text-sm">
-            <button className="h-9 px-4 text-foreground font-medium hover:text-primary transition-colors">
-              Entrar
-            </button>
-            <button className="h-9 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
-              Criar Conta
-            </button>
-          </div>
+    <div className="min-h-screen bg-[#F0EDEF] text-[#272125] selection:bg-[#272125] selection:text-[#F8F6F8]">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <a href="#" className="font-serif text-3xl text-[#272125]">
+          Nivi.
+        </a>
+        <div className="hidden items-center gap-8 md:flex">
+          <a href="#features" className="text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
+            Produto
+          </a>
+          <a href="#pricing" className="text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
+            Planos
+          </a>
+        </div>
+        <div className="flex items-center gap-4">
+          <a href="#" className="hidden text-base font-medium text-[#272125] transition-opacity hover:opacity-70 sm:block">
+            Entrar
+          </a>
+          <a href="#invite" className="rounded-full bg-[#272125] px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-[#272125]/90">
+            Começar
+          </a>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden px-6">
-        <div className="absolute inset-0 subtle-grid pointer-events-none" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+      <section className="mx-auto max-w-[90rem] px-4 pb-20 pt-4 sm:px-6">
+        <div className="relative isolate flex min-h-[600px] flex-col items-center overflow-hidden rounded-[2rem] bg-[#7A6470] px-8 pt-20 lg:flex-row lg:items-start lg:px-20">
+          <div className="absolute inset-0 -z-20 bg-[#2C2428]" />
+          <div className="grain-overlay pointer-events-none absolute inset-0 -z-10 opacity-30 mix-blend-overlay" />
+
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="z-10 flex w-full flex-col items-center pb-20 pt-10 text-center lg:w-1/2 lg:items-start lg:pb-32 lg:pt-20 lg:text-left"
           >
-            <h1 className="text-5xl md:text-7xl font-serif text-primary leading-[1.1] mb-6">
-              Acelere seu crédito<br />com a IA.
+            <a href="#pricing" className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/10">
+              <span>Primeiro teste por nossa conta</span>
+              <span className="h-4 w-px bg-white/20" />
+              <span className="flex items-center gap-1">
+                Saiba mais <ChevronRight className="h-3.5 w-3.5" />
+              </span>
+            </a>
+
+            <h1 className="mb-6 max-w-2xl font-serif text-5xl leading-[1.05] text-white sm:text-6xl lg:text-7xl">
+              Analistas de crédito deveriam analisar crédito
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-sans font-light mb-12">
-              O primeiro teste é por nossa conta
+
+            <p className="mb-10 max-w-lg text-lg font-light leading-relaxed text-white/80">
+              Não perder tempo montando apresentações, pesquisando em dezenas de sistemas ou consolidando dados manualmente. A Nivi faz o trabalho operacional para que sua equipe foque na decisão
             </p>
+
+            <form
+              id="invite"
+              onSubmit={handleSubmit}
+              className="flex w-full max-w-md items-center rounded-full border border-white/10 bg-white/10 p-1.5 backdrop-blur-sm transition-all focus-within:ring-2 focus-within:ring-white/30"
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder={submitted ? "Convite solicitado" : "Digite seu email"}
+                className="min-w-0 flex-1 border-none bg-transparent px-4 text-base font-medium text-white placeholder:text-white/50 focus:outline-none"
+              />
+              <button type="submit" className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-white/90 sm:px-6">
+                Solicitar
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="max-w-2xl mx-auto"
+            transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+            className="z-10 mt-12 flex w-full justify-center lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:w-1/2 lg:translate-x-12 lg:translate-y-16 lg:justify-end"
           >
-            {/* The Prompt Box */}
-            <div 
-              className={`relative bg-card rounded-lg border transition-all duration-300 shadow-sm ${
-                isFocused ? "border-primary/50 shadow-md ring-4 ring-primary/5" : "border-border"
-              }`}
-            >
-              <div className="p-4 flex items-start gap-3">
-                <Search className={`w-5 h-5 mt-1 transition-colors ${isFocused ? "text-primary" : "text-muted-foreground"}`} />
-                <div className="w-full">
-                  <textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    placeholder={`${animatedPlaceholder}${showPlaceholderCaret ? "|" : ""}`}
-                    className="w-full bg-transparent border-none resize-none focus:outline-none min-h-[80px] text-lg font-sans placeholder:text-muted-foreground/60 text-foreground"
-                  />
-                  {attachments.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pb-1">
-                      {attachments.map((file, index) => (
-                        <span
-                          key={`${file.name}-${index}`}
-                          className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-md bg-muted/40 border border-border/50 text-sm text-foreground font-sans"
-                        >
-                          <FileText className="w-3.5 h-3.5 text-muted-foreground" />
-                          <span className="max-w-[160px] truncate">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => removeAttachment(index)}
-                            className="text-muted-foreground hover:text-foreground transition-colors"
-                            aria-label={`Remover ${file.name}`}
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Output Selectors */}
-              <div className="px-4 py-3 border-t border-border/50 bg-muted/20 flex items-center justify-between rounded-b-lg">
-                <div className="flex items-center gap-2">
-                  <label className="hidden items-center gap-1.5 px-3 py-1.5 rounded-md border border-border/60 text-sm text-muted-foreground hover:bg-muted hover:text-foreground hover:border-border transition-colors cursor-pointer mr-2">
-                    <Paperclip className="w-4 h-4" />
-                    Anexar documentos
-                    <input
-                      type="file"
-                      multiple
-                      onChange={handleAttach}
-                      className="hidden"
-                      accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg"
-                    />
-                  </label>
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mr-2">Formato:</span>
-                  {(["Livre", "Dossiê"] as const).map((format) => {
-                    const icons = {
-                      "Livre": Search,
-                      "Dossiê": FileText,
-                    };
-                    const Icon = icons[format];
-                    const isSelected = selectedFormat === format;
-                    return (
-                      <button
-                        key={format}
-                        onClick={() => setSelectedFormat((prev) => (prev === format ? null : format))}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${
-                          isSelected 
-                            ? "bg-primary text-primary-foreground font-medium shadow-sm" 
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        {format}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <button 
-                  onClick={handleSimulate}
-                  disabled={(!prompt && attachments.length === 0) || isSimulating}
-                  className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-all disabled:cursor-not-allowed"
-                >
-                  {isSimulating ? (
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
-                    />
-                  ) : (
-                    <ArrowRight className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-            
-            <AnimatePresence>
-              {isSimulating && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="mt-6 text-sm text-muted-foreground font-sans flex items-center justify-center gap-2"
-                >
-                  <Clock className="w-4 h-4 animate-pulse" />
-                  Cruzando DRE, Balanço Patrimonial e Bacen...
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <DashboardMockup />
           </motion.div>
         </div>
       </section>
 
-      {/* Value Proposition */}
-      <section className="py-24 bg-card border-y border-border/50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              {
-                title: "Rigor Institucional",
-                desc: "Sem alucinações. Cada afirmação gerada no dossiê é rastreável até a linha exata do balanço ou certidão consultada."
-              },
-              {
-                title: "Silêncio Operacional",
-                desc: "Uma interface que não exige aprendizado. Feita para analistas que precisam de respostas rápidas, não de conversas longas."
-              },
-              {
-                title: "Profundidade Analítica",
-                desc: "Vai além do óbvio. Identifica inconsistências entre fluxo de caixa e variações patrimoniais automaticamente."
-              }
-            ].map((item, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="space-y-4"
-              >
-                <div className="h-px w-12 bg-primary/20" />
-                <h3 className="font-serif text-xl text-primary">{item.title}</h3>
-                <p className="text-muted-foreground font-sans text-sm leading-relaxed">
-                  {item.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+      <section className="mx-auto max-w-7xl px-6 pb-24 pt-8">
+        <div className="flex flex-wrap items-center justify-center gap-10 opacity-70 grayscale md:justify-between">
+          {partnerLogos.map((logo) => (
+            <span key={logo} className="font-serif text-2xl text-[#272125]/80">
+              {logo}
+            </span>
+          ))}
         </div>
       </section>
 
-      {/* Feature Deep Dive */}
-      <section id="uma-conversa-com-os-seus-dados" className="py-32 px-6 scroll-mt-24">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-3xl md:text-4xl font-serif text-primary mb-6"
-          >
-            Uma conversa com os seus dados
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-muted-foreground font-sans text-lg leading-relaxed"
-          >
-            Carregue um balanço, um contrato de crédito ou demonstrativos trimestrais.<br />
-            A Nivi sintetiza números e contexto de forma instantânea.
-          </motion.p>
+      <section id="features" className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mb-16 max-w-2xl">
+          <h2 className="mb-6 font-serif text-4xl leading-[1.1] text-[#272125] sm:text-5xl">
+            Seu analista passa mais tempo tomando decisões e menos tempo procurando informações
+          </h2>
+          <p className="mb-6 text-lg font-light leading-relaxed text-[#272125]/70">
+            Automatize pesquisas, centralize informações de mais de 300 fontes e entregue análises completas em um único ambiente, para que sua equipe dedique tempo ao que realmente importa
+          </p>
+          <a href="#scale" className="inline-flex items-center gap-1.5 text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
+            Ver como funciona <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.15 }}
-          onViewportEnter={startChatSequence}
-          className="max-w-3xl mx-auto bg-card border border-border/60 rounded-xl shadow-sm overflow-hidden"
+        <div className="grid gap-6 md:grid-cols-3">
+          {features.map((feature) => (
+            <article key={feature.title} className="rounded-3xl border border-black/[0.03] bg-[#EFECEE] p-2 pb-8">
+              <div className="mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-black/5 bg-white">
+                <FeatureVisual type={feature.visual} />
+              </div>
+              <div className="px-6">
+                <h3 className="mb-2 text-lg font-medium text-[#272125]">{feature.title}</h3>
+                <p className="text-base font-light leading-relaxed text-[#272125]/70">{feature.copy}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="scale" className="relative overflow-hidden bg-[#F0EDEF] py-24 sm:py-28">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[380px] grid-cols-[repeat(9,minmax(0,1fr))] px-6 sm:grid">
+          {Array.from({ length: 9 }).map((_, index) => (
+            <span key={index} className="h-full border-l border-dashed border-[#272125]/20" />
+          ))}
+        </div>
+
+        <svg
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[330px] w-full text-[#272125]/18"
+          viewBox="0 0 1440 330"
+          fill="none"
+          preserveAspectRatio="none"
+          aria-hidden="true"
         >
-          {/* Chat header */}
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-border/50">
-            <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-sm">
-              N
-            </div>
-            <div>
-              <p className="text-sm font-medium text-foreground">Nivi</p>
-              <p className="text-xs text-primary flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />
-                Análise ativa
-              </p>
-            </div>
-          </div>
+          <path d="M0 258C236 251 394 217 586 183C811 143 1026 115 1440 0" stroke="currentColor" strokeWidth="2" />
+        </svg>
 
-          {/* Chat body */}
-          <div className="px-6 py-8 space-y-6 min-h-[420px]">
-            {/* User message */}
-            <AnimatePresence>
-              {chatStep >= 1 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex justify-end"
-                >
-                  <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
-                    Pode analisar os demonstrativos do Q3 da Acme Corp? Preciso de um resumo de liquidez e serviço da dívida.
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Typing indicator (Nivi) */}
-            <AnimatePresence>
-              {chatStep === 2 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex gap-3"
-                >
-                  <div className="w-7 h-7 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-xs">
-                    N
-                  </div>
-                  <div className="bg-muted/30 border border-border/50 rounded-lg px-4 py-3 flex items-center gap-1.5">
-                    {[0, 1, 2].map((i) => (
-                      <motion.span
-                        key={i}
-                        className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60"
-                        animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Nivi response */}
-            <AnimatePresence>
-              {chatStep >= 3 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex gap-3"
-                >
-                  <div className="w-7 h-7 flex-shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-xs">
-                    N
-                  </div>
-                  <div className="space-y-4 w-full">
-                    <div className="bg-muted/30 border border-border/50 rounded-lg px-4 py-3 text-sm leading-relaxed font-sans text-foreground">
-                      Revisei os demonstrativos do Q3/2023 da Acme Corp e o contrato de crédito fornecido. A receita cresceu 14% ao ano, atingindo R$ 42,5M, mas identifiquei dois fatores relevantes quanto à liquidez.
-                    </div>
-                    {chatStep >= 4 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="grid sm:grid-cols-2 gap-3"
-                      >
-                        <div className="bg-card border border-border/60 rounded-lg p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <AlertTriangle className="w-4 h-4 text-amber-600" />
-                            <span className="text-sm font-medium text-amber-700">Compressão de Liquidez</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            Índice de liquidez corrente caiu de 1,5x para 1,1x. Prazo médio de pagamento ampliado para 65 dias (era 45 dias no Q2).
-                          </p>
-                        </div>
-                        <div className="bg-card border border-border/60 rounded-lg p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <CheckCircle className="w-4 h-4 text-primary" />
-                            <span className="text-sm font-medium text-primary">Cobertura do Serviço da Dívida</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            DSCR mantém-se saudável em 1,45x, sustentado por margem EBITDA de 22% e redução do capex.
-                          </p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Typing indicator (user) */}
-            <AnimatePresence>
-              {chatStep === 5 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex justify-end"
-                >
-                  <div className="bg-primary rounded-lg px-4 py-3 flex items-center gap-1.5">
-                    {[0, 1, 2].map((i) => (
-                      <motion.span
-                        key={i}
-                        className="w-1.5 h-1.5 rounded-full bg-primary-foreground/70"
-                        animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Follow-up user message */}
-            <AnimatePresence>
-              {chatStep >= 6 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex justify-end"
-                >
-                  <div className="max-w-[80%] bg-primary text-primary-foreground rounded-lg px-4 py-3 text-sm leading-relaxed font-sans">
-                    O que está puxando o alongamento de prazo de fornecedores? Estão preservando caixa?
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Chat input */}
-          <div className="px-6 py-4 border-t border-border/50 bg-muted/20 flex items-center gap-3">
-            <input
-              disabled
-              placeholder="Faça uma pergunta de acompanhamento..."
-              className="w-full bg-transparent border-none focus:outline-none text-sm font-sans placeholder:text-muted-foreground/60 text-foreground"
-            />
-            <button
-              disabled
-              className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center opacity-70 flex-shrink-0"
-              aria-label="Enviar"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Plans (Closed Beta) */}
-      <section className="py-24 bg-card border-y border-border/50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="max-w-2xl mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-primary leading-tight mb-4">
-              Planos para times de crédito
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="max-w-2xl">
+            <div className="mb-5 text-sm font-medium uppercase tracking-wider text-[#272125]/60">Feita para escala</div>
+            <h2 className="mb-7 max-w-3xl font-serif text-4xl leading-[1.05] text-[#272125] sm:text-5xl lg:text-[3.4rem]">
+              A camada inteligente para esteiras de crédito.
             </h2>
-            <p className="text-muted-foreground font-sans">
-              Estamos em teste fechado. A estrutura comercial e os limites por plano serão liberados em breve para empresas aprovadas na lista de espera.
+            <p className="mb-20 max-w-xl text-lg font-light leading-relaxed text-[#272125]/70">
+              A Nivi ajuda analistas, gerentes e comitês a reduzir tempo de coleta, padronizar pareceres e encontrar sinais que passam batido.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-10 pb-14 sm:grid-cols-2 sm:gap-20 lg:w-[47rem] lg:grid-cols-[15rem_15rem]">
             {[
-              {
-                icon: Users,
-                tier: "Plano Starter",
-                audience: "Para squads iniciando com IA no crédito.",
-                desc: "Fluxos essenciais de análise e acompanhamento para operações com menor volume.",
-              },
-              {
-                icon: PenLine,
-                tier: "Plano Pro",
-                audience: "Para esteiras com alto giro e múltiplos analistas.",
-                desc: "Mais automações, colaboração entre times e rastreabilidade avançada de evidências.",
-              },
-              {
-                icon: Gavel,
-                tier: "Plano Enterprise",
-                audience: "Para instituições com governança e requisitos rigorosos.",
-                desc: "Controles de segurança expandidos, políticas customizadas e operação dedicada.",
-              }
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group relative bg-background p-8 flex flex-col border border-border/50 rounded-lg hover:bg-muted/20 transition-colors"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-11 h-11 rounded-full bg-primary/5 border border-primary/15 flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/25 transition-colors">
-                    <item.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-xs font-medium uppercase tracking-wider text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
-                    Em breve
-                  </span>
-                </div>
-                <h3 className="font-serif text-xl text-primary mb-2">{item.tier}</h3>
-                <p className="text-sm text-foreground/90 font-sans mb-3">
-                  {item.audience}
-                </p>
-                <p className="text-sm text-muted-foreground font-sans leading-relaxed">
-                  {item.desc}
-                </p>
-                <p className="text-xs text-muted-foreground/80 font-sans mt-6 pt-5 border-t border-border/50">
-                  Disponibilidade inicial para participantes do teste fechado.
-                </p>
-              </motion.div>
+              ["80%", "menos tempo reunindo documentos e evidências para o parecer."],
+              ["24/7", "análises disponíveis quando a esteira precisa continuar."],
+            ].map(([value, copy]) => (
+              <div key={value} className="min-h-36 border-l border-[#272125]/12 pl-6">
+                <div className="mb-3 text-4xl font-semibold leading-none text-[#272125]">{value}</div>
+                <div className="max-w-[190px] text-base font-light leading-relaxed text-[#272125]/68">{copy}</div>
+              </div>
             ))}
           </div>
-
-          <p className="text-sm text-muted-foreground font-sans mt-8">
-            Interessado em prioridade de acesso? Entre na lista de espera para receber o cronograma de abertura pública.
-          </p>
         </div>
       </section>
 
-      {/* Security */}
-      <section id="sigilo-por-design" className="py-32 px-6 scroll-mt-24">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <Shield className="w-12 h-12 text-primary/30 mx-auto" />
-          <h2 className="text-3xl font-serif text-primary">Sigilo por design</h2>
-          <p className="text-muted-foreground font-sans text-lg max-w-2xl mx-auto leading-relaxed">
-            Nenhum dado financeiro transita em modelos públicos. Operamos em infraestrutura isolada (Single-tenant) e não utilizamos os dados dos seus clientes para treinar modelos base. Em conformidade absoluta com a LGPD e resoluções do Bacen.
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 text-sm font-medium text-foreground pt-4">
-            <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/30 border border-border/50">
-              <Lock className="w-4 h-4 text-primary" /> SOC 2 Type II
-            </span>
-            <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/30 border border-border/50">
-              <Database className="w-4 h-4 text-primary" /> Single-tenant disponível
-            </span>
+      <section className="mx-auto max-w-5xl px-6 py-20">
+        <h2 className="mb-12 font-serif text-3xl leading-[1.15] text-[#272125] sm:text-4xl lg:text-[2.75rem]">
+          “A Nivi tira a análise do modo caça-documento e coloca o time direto na decisão.”
+        </h2>
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#272125] font-serif text-xl text-white">G</div>
+          <div>
+            <div className="text-base font-medium text-[#272125]">Guilherme Bausas</div>
+            <div className="text-base font-light text-[#272125]/60">Head de Crédito, Larca Capital</div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-primary text-primary-foreground text-center">
-        <div className="max-w-3xl mx-auto px-6 space-y-8">
-          <h2 className="text-4xl font-serif text-primary-foreground">Eleve o rigor. Reduza a espera.</h2>
-          <p className="text-primary-foreground/80 font-sans text-lg max-w-xl mx-auto">
-            Abra vagas para acesso antecipado limitadas. Selecionamos parceiros que processam alto volume de esteira de crédito.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <button className="border border-primary-foreground/30 text-primary-foreground px-8 py-4 rounded-md font-medium hover:bg-primary-foreground/10 transition-colors">
-              Entrar
-            </button>
-            <button className="bg-background text-primary px-8 py-4 rounded-md font-medium hover:bg-background/90 transition-colors inline-flex items-center gap-2">
-              Criar Conta <ChevronRight className="w-4 h-4" />
-            </button>
+      <section className="mx-auto max-w-7xl px-6 py-24">
+        <div className="grid gap-14 border-t border-[#272125]/10 pt-20 lg:grid-cols-[1fr_0.92fr] lg:gap-24">
+          <h2 className="font-serif text-4xl leading-[1.05] text-[#272125] sm:text-5xl lg:text-[3.4rem]">
+            Perguntas e respostas
+          </h2>
+
+          <div className="divide-y divide-[#272125]/10 border-t border-[#272125]/10">
+            {faqs.map((question) => (
+              <button key={question} className="group flex w-full items-center justify-between gap-8 py-7 text-left">
+                <span className="text-lg font-light leading-relaxed text-[#272125] transition-opacity group-hover:opacity-70">{question}</span>
+                <Plus className="h-4 w-4 shrink-0 stroke-[1.5] text-[#272125]/45" />
+              </button>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-border/50 text-center text-sm text-muted-foreground font-sans px-6 bg-background">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="font-serif text-lg text-primary">Nivi</div>
-          <div className="space-x-6">
-            <a href="#" className="hover:text-foreground transition-colors">Termos</a>
-            <a href="#" className="hover:text-foreground transition-colors">Privacidade</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contato</a>
+      <section id="pricing" className="mx-auto max-w-7xl px-6 py-24">
+        <h2 className="mb-16 max-w-4xl font-serif text-4xl leading-[1.05] text-[#272125] sm:text-5xl lg:text-[3.4rem]">
+          Planos para cada fase da sua esteira.
+        </h2>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {plans.map((plan) => (
+            <article
+              key={plan.name}
+              className="flex min-h-[37rem] flex-col rounded-[1.35rem] border border-[#272125]/8 bg-[#E8E4E7] p-8 shadow-[0_1px_2px_rgba(39,33,37,0.06)]"
+            >
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <h3 className="text-2xl font-medium text-[#272125]">{plan.name}</h3>
+                {plan.highlighted && (
+                  <span className="rounded-full bg-[#D3CED2] px-4 py-1 text-xs font-semibold text-[#272125]">Mais popular</span>
+                )}
+              </div>
+              <div className="mb-6 flex items-end gap-1">
+                <span className="text-[2rem] font-medium leading-none text-[#272125]">{plan.price}</span>
+                {plan.period && <span className="pb-1 text-base font-light text-[#272125]/60">{plan.period}</span>}
+              </div>
+              <p className="mb-10 min-h-[3.5rem] max-w-xs text-base font-light leading-relaxed text-[#272125]/68">{plan.copy}</p>
+
+              <ul className="mb-10 space-y-5">
+                {plan.items.map((item) => (
+                  <li key={item} className="flex items-start gap-4 text-base font-light leading-snug text-[#272125]/72">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 stroke-[1.5] text-[#272125]/45" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                className={`mt-auto w-full rounded-full border px-8 py-4 text-base font-semibold transition-colors ${plan.highlighted
+                    ? "border-[#272125] bg-[#272125] text-white shadow-[0_6px_14px_rgba(39,33,37,0.18)] hover:bg-[#272125]/90"
+                    : "border-[#272125]/8 bg-[#DDD8DC] text-[#272125] hover:bg-[#D6D0D5]"
+                  }`}
+              >
+                Solicitar acesso
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="rounded-[2rem] bg-[#E5E0E3] px-8 py-20 text-center">
+          <h2 className="mx-auto mb-6 max-w-2xl font-serif text-4xl leading-[1.1] text-[#272125] sm:text-5xl">
+            Pronto para reduzir a espera na análise de crédito?
+          </h2>
+          <p className="mx-auto mb-10 max-w-xl text-lg font-light leading-relaxed text-[#272125]/70">
+            Entre na lista para um piloto com sua equipe e veja a Nivi trabalhando com documentos reais.
+          </p>
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a href="#invite" className="w-full rounded-full bg-[#272125] px-8 py-3 text-center text-base font-medium text-white shadow-md transition-colors hover:bg-[#272125]/90 sm:w-auto">
+              Solicitar piloto
+            </a>
+            <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-black/5 sm:w-auto">
+              Ver produto <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
-          <div>© {new Date().getFullYear()} Nivi Chat. Todos os direitos reservados.</div>
+        </div>
+      </section>
+
+      <footer className="mt-10 border-t border-black/[0.05] bg-[#EFECEE] pb-12 pt-20">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-5">
+          <div className="md:col-span-2">
+            <div className="mb-4 font-serif text-3xl text-[#272125]">Nivi.</div>
+            <p className="max-w-md text-base font-light leading-relaxed text-[#272125]/60">
+              IA para crédito com rastreabilidade, segurança e foco no trabalho real do analista.
+            </p>
+          </div>
+          {[
+            ["Produto", "Features", "Planos"],
+            ["Empresa", "Sobre", "Contato", "Carreiras"],
+            ["Legal", "Termos", "Privacidade", "LGPD"],
+          ].map(([heading, ...links]) => (
+            <div key={heading}>
+              <div className="mb-4 text-base font-medium text-[#272125]">{heading}</div>
+              <ul className="space-y-3">
+                {links.map((link) => (
+                  <li key={link}>
+                    <a href="#" className="text-base font-light text-[#272125]/60 transition-colors hover:text-[#272125]">
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="mx-auto mt-16 flex max-w-7xl flex-col gap-4 px-6 text-sm font-light text-[#272125]/50 md:flex-row md:items-center md:justify-between">
+          <span>© {new Date().getFullYear()} Nivi. Todos os direitos reservados.</span>
+          <span>Feita para times de crédito que preferem evidência a achismo.</span>
         </div>
       </footer>
     </div>
