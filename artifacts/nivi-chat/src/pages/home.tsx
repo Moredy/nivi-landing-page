@@ -66,7 +66,7 @@ const plans = [
     price: "Sob convite",
     period: "",
     copy: "Para squads iniciando com IA em crédito.",
-    items: ["Até 2 esteiras", "Relatórios livres", "Upload de documentos", "Pareceres com fontes", "Suporte por email"],
+    items: ["Até 2 modelos de dossiê", "Relatórios livres", "Upload de documentos", "Pareceres com fontes", "Suporte por email"],
     highlighted: false,
   },
   {
@@ -74,7 +74,7 @@ const plans = [
     price: "Piloto assistido",
     period: "",
     copy: "Para times com volume e colaboração diária.",
-    items: ["Tudo do Starter", "Dossiês padronizados", "Alertas de inconsistência", "Histórico auditável", "Fila colaborativa", "Onboarding guiado", "Relatórios gerenciais"],
+    items: ["Tudo do Starter", "Dossiês padronizados", "Alertas de inconsistência", "Histórico auditável", "Análise colaborativa", "Onboarding guiado", "Relatórios gerenciais"],
     highlighted: true,
   },
   {
@@ -145,10 +145,10 @@ function DashboardMockup() {
 
         <main className="flex min-w-0 flex-1 flex-col bg-white">
           <div className="border-b border-black/5 p-4">
-            <div className="pb-4 text-base font-medium text-[#272125]">Fila de crédito</div>
+            <div className="pb-4 text-base font-medium text-[#272125]">Assistente de crédito</div>
             <div className="flex gap-2">
-              <span className="rounded-full bg-[#272125] px-3 py-1 text-xs font-medium text-white">Em análise</span>
-              <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-black/60">Aprovação</span>
+              <span className="rounded-full bg-[#272125] px-3 py-1 text-xs font-medium text-white">Perguntas</span>
+              <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-black/60">Dossiês</span>
             </div>
           </div>
 
@@ -380,7 +380,7 @@ export default function Home() {
           <div className="max-w-2xl">
             <div className="mb-5 text-sm font-medium uppercase tracking-wider text-[#272125]/60">Feita para escala</div>
             <h2 className="mb-7 max-w-3xl font-serif text-4xl leading-[1.05] text-[#272125] sm:text-5xl lg:text-[3.4rem]">
-              A camada inteligente para esteiras de crédito.
+              O assistente inteligente para análise de crédito.
             </h2>
             <p className="mb-20 max-w-xl text-lg font-light leading-relaxed text-[#272125]/70">
               A Nivi ajuda analistas, gerentes e comitês a reduzir tempo de coleta, padronizar pareceres e encontrar sinais que passam batido.
@@ -390,7 +390,7 @@ export default function Home() {
           <div className="grid gap-10 pb-14 sm:grid-cols-2 sm:gap-20 lg:w-[47rem] lg:grid-cols-[15rem_15rem]">
             {[
               ["80%", "menos tempo reunindo documentos e evidências para o parecer."],
-              ["24/7", "análises disponíveis quando a esteira precisa continuar."],
+              ["2x", "mais oportunidades analisadas pelo mesmo time, com contexto em minutos."],
             ].map(([value, copy]) => (
               <div key={value} className="min-h-36 border-l border-[#272125]/12 pl-6">
                 <div className="mb-3 text-4xl font-semibold leading-none text-[#272125]">{value}</div>
@@ -433,7 +433,7 @@ export default function Home() {
 
       <section id="pricing" className="mx-auto max-w-7xl px-6 py-24">
         <h2 className="mb-16 max-w-4xl font-serif text-4xl leading-[1.05] text-[#272125] sm:text-5xl lg:text-[3.4rem]">
-          Planos para cada fase da sua esteira.
+          Planos para usar a Nivi como assistente.
         </h2>
         <div className="grid gap-6 lg:grid-cols-3">
           {plans.map((plan) => (
