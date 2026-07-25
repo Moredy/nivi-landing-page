@@ -2,6 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { Search, FileText, ArrowRight, Shield, CheckCircle2, ChevronRight, BarChart3, Clock, Database, Lock, Paperclip, X, Send, AlertTriangle, CheckCircle, Users, PenLine, Gavel } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const PLACEHOLDER_SUGGESTIONS = [
+  "Gere um relatório simples da empresa ACME S.A. (CNPJ 12.345.678/0001-90)",
+  "Faça um resumo rápido da situação financeira da empresa Beta Ltda.",
+  "Explique em linguagem simples os principais riscos do CNPJ 98.765.432/0001-10",
+  "Busque sinais de fraude cruzando documentos, SCR e processos do CNPJ 12.345.678/0001-90",
+  "Relacione certidões, ações judiciais e alertas de compliance do CPF 123.456.789-09",
+  "Cruze balanço e DRE com SCR para estimar risco de crédito do CNPJ 98.765.432/0001-10",
+  "Confronte contratos e garantias com dívida pública e passivos do CNPJ 45.678.901/0001-55",
+  "Compare bases processuais, protestos e compliance para detectar fraude no CPF 987.654.321-00",
+  "Identifique inconsistências entre demonstrativos e dados externos do CNPJ 23.456.789/0001-11",
+];
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -9,7 +21,61 @@ export default function Home() {
   const [isSimulating, setIsSimulating] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [chatStep, setChatStep] = useState(0);
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
+  const [showPlaceholderCaret, setShowPlaceholderCaret] = useState(true);
   const chatStarted = useRef(false);
+
+  useEffect(() => {
+    if (prompt) {
+      setAnimatedPlaceholder("");
+      return;
+    }
+
+    const currentText = PLACEHOLDER_SUGGESTIONS[placeholderIndex];
+    const isTyping = !isDeletingPlaceholder;
+
+    const speed = isTyping ? 42 : 28;
+    const holdWhenComplete = 1200;
+    const holdWhenEmpty = 280;
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    if (isTyping && animatedPlaceholder.length < currentText.length) {
+      timeoutId = setTimeout(() => {
+        setAnimatedPlaceholder(currentText.slice(0, animatedPlaceholder.length + 1));
+      }, speed);
+    } else if (isTyping && animatedPlaceholder.length === currentText.length) {
+      timeoutId = setTimeout(() => {
+        setIsDeletingPlaceholder(true);
+      }, holdWhenComplete);
+    } else if (!isTyping && animatedPlaceholder.length > 0) {
+      timeoutId = setTimeout(() => {
+        setAnimatedPlaceholder(currentText.slice(0, animatedPlaceholder.length - 1));
+      }, speed);
+    } else {
+      timeoutId = setTimeout(() => {
+        setIsDeletingPlaceholder(false);
+        setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_SUGGESTIONS.length);
+      }, holdWhenEmpty);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [animatedPlaceholder, isDeletingPlaceholder, placeholderIndex, prompt]);
+
+  useEffect(() => {
+    if (prompt) {
+      setShowPlaceholderCaret(false);
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      setShowPlaceholderCaret((prev) => !prev);
+    }, 500);
+
+    return () => clearInterval(intervalId);
+  }, [prompt]);
 
   const startChatSequence = () => {
     if (chatStarted.current) return;
@@ -46,6 +112,22 @@ export default function Home() {
     setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleScrollToPrivacy = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    document.getElementById("sigilo-por-design")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleScrollToAbout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    document.getElementById("uma-conversa-com-os-seus-dados")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
       {/* Navigation */}
@@ -54,8 +136,8 @@ export default function Home() {
           <div className="flex items-center gap-8">
             <div className="font-serif text-2xl tracking-tighter text-primary font-medium">Nivi</div>
             <div className="flex items-center gap-6 text-sm">
-              <button className="text-muted-foreground hover:text-foreground transition-colors">Manifesto</button>
-              <button className="text-muted-foreground hover:text-foreground transition-colors">Segurança</button>
+              <a href="#uma-conversa-com-os-seus-dados" onClick={handleScrollToAbout} className="text-muted-foreground hover:text-foreground transition-colors">Sobre</a>
+              <a href="#sigilo-por-design" onClick={handleScrollToPrivacy} className="text-muted-foreground hover:text-foreground transition-colors">Privacidade</a>
             </div>
           </div>
           <div className="flex items-center gap-6 text-sm">
@@ -79,10 +161,10 @@ export default function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <h1 className="text-5xl md:text-7xl font-serif text-primary leading-[1.1] mb-6">
-              Austeridade analítica.<br />Escala algorítmica.
+              Acelere seu crédito<br />com a IA.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-sans font-light mb-12">
-              Transforme dados brutos, demonstrações financeiras e históricos de mercado em decisões de crédito fundamentadas em segundos.
+              O primeiro teste é por nossa conta
             </p>
           </motion.div>
 
@@ -106,7 +188,7 @@ export default function Home() {
                     onChange={(e) => setPrompt(e.target.value)}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    placeholder="Peça para o Nivi analisar o crédito de..."
+                    placeholder={`${animatedPlaceholder}${showPlaceholderCaret ? "|" : ""}`}
                     className="w-full bg-transparent border-none resize-none focus:outline-none min-h-[80px] text-lg font-sans placeholder:text-muted-foreground/60 text-foreground"
                   />
                   {attachments.length > 0 && (
@@ -136,7 +218,7 @@ export default function Home() {
               {/* Output Selectors */}
               <div className="px-4 py-3 border-t border-border/50 bg-muted/20 flex items-center justify-between rounded-b-lg">
                 <div className="flex items-center gap-2">
-                  <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border/60 text-sm text-muted-foreground hover:bg-muted hover:text-foreground hover:border-border transition-colors cursor-pointer mr-2">
+                  <label className="hidden items-center gap-1.5 px-3 py-1.5 rounded-md border border-border/60 text-sm text-muted-foreground hover:bg-muted hover:text-foreground hover:border-border transition-colors cursor-pointer mr-2">
                     <Paperclip className="w-4 h-4" />
                     Anexar documentos
                     <input
@@ -245,7 +327,7 @@ export default function Home() {
       </section>
 
       {/* Feature Deep Dive */}
-      <section className="py-32 px-6">
+      <section id="uma-conversa-com-os-seus-dados" className="py-32 px-6 scroll-mt-24">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -440,37 +522,37 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Outputs Formats */}
+      {/* Plans (Closed Beta) */}
       <section className="py-24 bg-card border-y border-border/50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="max-w-2xl mb-16">
             <h2 className="text-3xl md:text-4xl font-serif text-primary leading-tight mb-4">
-              Projetada para toda a equipe de crédito
+              Planos para times de crédito
             </h2>
             <p className="text-muted-foreground font-sans">
-              Cada função enxerga a Nivi de um ângulo diferente — mas todos partem da mesma fonte de verdade.
+              Estamos em teste fechado. A estrutura comercial e os limites por plano serão liberados em breve para empresas aprovadas na lista de espera.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-px bg-border/40 rounded-lg overflow-hidden border border-border/40">
+          <div className="grid md:grid-cols-3 gap-4">
             {[
               {
                 icon: Users,
-                num: "01",
-                title: "Gerentes e Diretores",
-                desc: "Valide análises instantaneamente, estresse premissas e tenha uma visão unificada do risco do portfólio — sem vasculhar planilhas."
+                tier: "Plano Starter",
+                audience: "Para squads iniciando com IA no crédito.",
+                desc: "Fluxos essenciais de análise e acompanhamento para operações com menor volume.",
               },
               {
                 icon: PenLine,
-                num: "02",
-                title: "Analistas Júnior",
-                desc: "Acelere o planilhamento. Deixe a Nivi extrair os dados para que você possa se concentrar em escrever o memorando de crédito."
+                tier: "Plano Pro",
+                audience: "Para esteiras com alto giro e múltiplos analistas.",
+                desc: "Mais automações, colaboração entre times e rastreabilidade avançada de evidências.",
               },
               {
                 icon: Gavel,
-                num: "03",
-                title: "Comitês de Crédito",
-                desc: "Receba o parecer consolidado com demonstrativos padronizados, índices calculados e alertas — tudo rastreável à fonte documental."
+                tier: "Plano Enterprise",
+                audience: "Para instituições com governança e requisitos rigorosos.",
+                desc: "Controles de segurança expandidos, políticas customizadas e operação dedicada.",
               }
             ].map((item, i) => (
               <motion.div
@@ -479,26 +561,38 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group relative bg-background p-8 flex flex-col hover:bg-muted/20 transition-colors"
+                className="group relative bg-background p-8 flex flex-col border border-border/50 rounded-lg hover:bg-muted/20 transition-colors"
               >
-                <span className="font-serif text-5xl text-primary/10 group-hover:text-primary/15 transition-colors absolute top-6 right-6 select-none">
-                  {item.num}
-                </span>
-                <div className="w-11 h-11 rounded-full bg-primary/5 border border-primary/15 flex items-center justify-center mb-6 group-hover:bg-primary/10 group-hover:border-primary/25 transition-colors">
-                  <item.icon className="w-5 h-5 text-primary" />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-11 h-11 rounded-full bg-primary/5 border border-primary/15 flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/25 transition-colors">
+                    <item.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-xs font-medium uppercase tracking-wider text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+                    Em breve
+                  </span>
                 </div>
-                <h3 className="font-serif text-lg text-primary mb-2">Para {item.title}</h3>
+                <h3 className="font-serif text-xl text-primary mb-2">{item.tier}</h3>
+                <p className="text-sm text-foreground/90 font-sans mb-3">
+                  {item.audience}
+                </p>
                 <p className="text-sm text-muted-foreground font-sans leading-relaxed">
                   {item.desc}
+                </p>
+                <p className="text-xs text-muted-foreground/80 font-sans mt-6 pt-5 border-t border-border/50">
+                  Disponibilidade inicial para participantes do teste fechado.
                 </p>
               </motion.div>
             ))}
           </div>
+
+          <p className="text-sm text-muted-foreground font-sans mt-8">
+            Interessado em prioridade de acesso? Entre na lista de espera para receber o cronograma de abertura pública.
+          </p>
         </div>
       </section>
 
       {/* Security */}
-      <section className="py-32 px-6">
+      <section id="sigilo-por-design" className="py-32 px-6 scroll-mt-24">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <Shield className="w-12 h-12 text-primary/30 mx-auto" />
           <h2 className="text-3xl font-serif text-primary">Sigilo por design</h2>
