@@ -88,10 +88,26 @@ const plans = [
 ];
 
 const faqs = [
-  "A Nivi usa dados dos clientes para treinar modelos públicos?",
-  "Posso começar com um piloto pequeno antes de integrar sistemas?",
-  "Os relatórios mostram a fonte de cada conclusão?",
-  "Quais documentos posso analisar?",
+  {
+    question: "A Nivi usa dados dos clientes para treinar modelos?",
+    answer:
+      "Não. Os dados processados pela Nivi não são utilizados para treinar modelos de inteligência artificial. Eles são usados exclusivamente para executar as funcionalidades da plataforma e permanecem protegidos durante todo o processamento.",
+  },
+  {
+    question: "Posso começar com um piloto pequeno antes de integrar sistemas?",
+    answer:
+      "Sim. A Nivi pode ser implementada gradualmente. Você pode iniciar com um piloto para validar os resultados na sua operação e expandir a utilização conforme a necessidade, sem depender de uma integração completa desde o primeiro dia.",
+  },
+  {
+    question: "Os relatórios mostram a fonte de cada conclusão?",
+    answer:
+      "Sim. Sempre que aplicável, a Nivi apresenta as fontes utilizadas para fundamentar cada informação e conclusão, permitindo que o analista valide os dados e tome decisões com transparência e confiança.",
+  },
+  {
+    question: "Quais documentos posso analisar?",
+    answer:
+      "Praticamente qualquer documento. A Nivi analisa desde demonstrativos financeiros e contratos até documentos societários, certidões, comprovantes e outros arquivos utilizados na análise de crédito.",
+  },
 ];
 
 function DashboardMockup() {
@@ -232,6 +248,7 @@ function FeatureVisual({ type }: { type: string }) {
 export default function Home() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -247,8 +264,8 @@ export default function Home() {
           Nivi.
         </a>
         <div className="hidden items-center gap-8 md:flex">
-          <a href="#features" className="text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
-            Produto
+          <a href="#about" className="text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
+            Sobre
           </a>
           <a href="#pricing" className="text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
             Planos
@@ -256,10 +273,10 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-4">
           <a href="#" className="hidden text-base font-medium text-[#272125] transition-opacity hover:opacity-70 sm:block">
-            Entrar
+            Fale conosco
           </a>
           <a href="#invite" className="rounded-full bg-[#272125] px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-[#272125]/90">
-            Começar
+            Agendar demo
           </a>
         </div>
       </nav>
@@ -283,12 +300,12 @@ export default function Home() {
               </span>
             </a>
 
-            <h1 className="mb-6 max-w-2xl font-serif text-5xl leading-[1.05] text-white sm:text-6xl lg:text-7xl">
-              Analistas de crédito deveriam analisar crédito
+            <h1 className="mb-6 max-w-2xl font-serif text-[2.75rem] leading-[1.05] text-white sm:text-[3.45rem] lg:text-[4.1rem]">
+              Analistas de crédito deveriam analisar crédito.
             </h1>
 
             <p className="mb-10 max-w-lg text-lg font-light leading-relaxed text-white/80">
-              Não perder tempo montando apresentações, pesquisando em dezenas de sistemas ou consolidando dados manualmente. A Nivi faz o trabalho operacional para que sua equipe foque na decisão
+              Elimine horas de trabalho operacional. A Nivi automatiza pesquisas, consolida informações de centenas de fontes e organiza tudo em um único ambiente para apoiar seu analista durante a análise.
             </p>
 
             <form
@@ -300,11 +317,11 @@ export default function Home() {
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder={submitted ? "Convite solicitado" : "Digite seu email"}
+                placeholder={submitted ? "Convite solicitado" : "Digite seu email corporativo"}
                 className="min-w-0 flex-1 border-none bg-transparent px-4 text-base font-medium text-white placeholder:text-white/50 focus:outline-none"
               />
               <button type="submit" className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-white/90 sm:px-6">
-                Solicitar
+                Começar agora
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
@@ -331,13 +348,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-7xl px-6 py-20">
+      <section id="about" className="mx-auto max-w-7xl px-6 py-20">
         <div className="mb-16 max-w-2xl">
           <h2 className="mb-6 font-serif text-4xl leading-[1.1] text-[#272125] sm:text-5xl">
-            Seu analista passa mais tempo tomando decisões e menos tempo procurando informações
+            Tudo o que seu analista precisa, em um único lugar
           </h2>
           <p className="mb-6 text-lg font-light leading-relaxed text-[#272125]/70">
-            Automatize pesquisas, centralize informações de mais de 300 fontes e entregue análises completas em um único ambiente, para que sua equipe dedique tempo ao que realmente importa
+            A Nivi consulta mais de 300 fontes, organiza documentos, cruza informações e responde perguntas durante a análise, eliminando tarefas operacionais para que seu time decida com mais contexto e agilidade
           </p>
           <a href="#scale" className="inline-flex items-center gap-1.5 text-base font-medium text-[#272125] transition-opacity hover:opacity-70">
             Ver como funciona <ArrowRight className="h-4 w-4" />
@@ -378,9 +395,9 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="max-w-2xl">
-            <div className="mb-5 text-sm font-medium uppercase tracking-wider text-[#272125]/60">Feita para escala</div>
+            <div className="mb-5 text-sm font-medium uppercase tracking-wider text-[#272125]/60">Escale sua operação</div>
             <h2 className="mb-7 max-w-3xl font-serif text-4xl leading-[1.05] text-[#272125] sm:text-5xl lg:text-[3.4rem]">
-              O assistente inteligente para análise de crédito.
+              Quando seu analista ganha tempo, a produtividade da equipe aumenta.
             </h2>
             <p className="mb-20 max-w-xl text-lg font-light leading-relaxed text-[#272125]/70">
               A Nivi ajuda analistas, gerentes e comitês a reduzir tempo de coleta, padronizar pareceres e encontrar sinais que passam batido.
@@ -390,7 +407,7 @@ export default function Home() {
           <div className="grid gap-10 pb-14 sm:grid-cols-2 sm:gap-20 lg:w-[47rem] lg:grid-cols-[15rem_15rem]">
             {[
               ["80%", "menos tempo reunindo documentos e evidências para o parecer."],
-              ["2x", "mais oportunidades analisadas pelo mesmo time, com contexto em minutos."],
+              ["2x", "pelo menos mais oportunidades analisadas pelo mesmo time."],
             ].map(([value, copy]) => (
               <div key={value} className="min-h-36 border-l border-[#272125]/12 pl-6">
                 <div className="mb-3 text-4xl font-semibold leading-none text-[#272125]">{value}</div>
@@ -421,12 +438,36 @@ export default function Home() {
           </h2>
 
           <div className="divide-y divide-[#272125]/10 border-t border-[#272125]/10">
-            {faqs.map((question) => (
-              <button key={question} className="group flex w-full items-center justify-between gap-8 py-7 text-left">
-                <span className="text-lg font-light leading-relaxed text-[#272125] transition-opacity group-hover:opacity-70">{question}</span>
-                <Plus className="h-4 w-4 shrink-0 stroke-[1.5] text-[#272125]/45" />
-              </button>
-            ))}
+            {faqs.map((faq, index) => {
+              const isOpen = openFaq === index;
+              const answerId = `faq-answer-${index}`;
+
+              return (
+                <div key={faq.question}>
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={answerId}
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    className="group flex w-full items-center justify-between gap-8 py-7 text-left"
+                  >
+                    <span className="text-lg font-light leading-relaxed text-[#272125] transition-opacity group-hover:opacity-70">
+                      {faq.question}
+                    </span>
+                    <Plus
+                      className={`h-4 w-4 shrink-0 stroke-[1.5] text-[#272125]/45 transition-transform duration-200 ${
+                        isOpen ? "rotate-45" : ""
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <p id={answerId} className="-mt-2 pb-7 pr-12 text-base font-light leading-relaxed text-[#272125]/68">
+                      {faq.answer}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -487,7 +528,7 @@ export default function Home() {
             <a href="#invite" className="w-full rounded-full bg-[#272125] px-8 py-3 text-center text-base font-medium text-white shadow-md transition-colors hover:bg-[#272125]/90 sm:w-auto">
               Solicitar piloto
             </a>
-            <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-black/5 sm:w-auto">
+            <a href="#about" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-black/5 sm:w-auto">
               Ver produto <ArrowRight className="h-4 w-4" />
             </a>
           </div>
