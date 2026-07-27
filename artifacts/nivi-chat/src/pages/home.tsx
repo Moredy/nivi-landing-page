@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronRight,
   Clock,
+  Database,
   FileCheck2,
   FileText,
   Inbox,
@@ -19,6 +20,9 @@ import {
 import { motion } from "framer-motion";
 
 const partnerLogos = ["Atlas Bank", "Cora", "Monet", "Aster", "Nexo", "Vértice"];
+
+const whatsappHref = "https://wa.me/5511971728811?text=Ol%C3%A1%2C%20estou%20com%20algumas%20d%C3%BAvidas%20a%20respeito%20da%20Nivi";
+const demoHref = "https://cal.com/matheus-marques-bkv7ag/demonstracao-nivi";
 
 const inboxItems = [
   {
@@ -192,6 +196,85 @@ function DashboardMockup() {
   );
 }
 
+function CreditStudyMockup({ activeTab }: { activeTab: "dossiers" | "research" | "compliance" }) {
+  const tabContent = {
+    dossiers: { title: "Estudo de crédito", subtitle: "Grupo Horizonte Ltda. · Atualizado agora", status: "Recomendado" },
+    research: { title: "Pesquisa cadastral", subtitle: "Grupo Horizonte Ltda. · 12 fontes consultadas", status: "Em análise" },
+    compliance: { title: "Verificação de compliance", subtitle: "Grupo Horizonte Ltda. · Última checagem agora", status: "Sem bloqueios" },
+  }[activeTab];
+  const factors = [
+    { label: "Liquidez", value: "1,42x", tone: "bg-[#A6E1CE]" },
+    { label: "Endividamento", value: "2,1x", tone: "bg-[#E3C593]" },
+    { label: "Cobertura DSCR", value: "1,58x", tone: "bg-[#79BCA8]" },
+  ];
+
+  return (
+    <div className="w-full max-w-[41rem] overflow-hidden rounded-xl border border-black/10 bg-[#FCFBF8] p-5 text-[#272125] shadow-2xl sm:p-7">
+      <div className="mb-5 flex items-start justify-between gap-4 border-b border-black/10 pb-4">
+        <div>
+          <div className="font-serif text-xl sm:text-2xl">{tabContent.title}</div>
+          <div className="mt-1 text-xs text-black/50">{tabContent.subtitle}</div>
+        </div>
+        <span className="shrink-0 rounded-full border border-[#2F8B6D]/30 bg-[#E4F5EE] px-3 py-1 text-xs font-semibold text-[#17664E]">{tabContent.status}</span>
+      </div>
+
+      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="rounded-lg bg-[#F1EFEB] p-3">
+          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Limite sugerido</div>
+          <div className="mt-1 text-lg font-semibold">R$ 2,4 mi</div>
+          <div className="mt-1 text-[11px] text-[#17664E]">↑ 12% vs. anterior</div>
+        </div>
+        <div className="rounded-lg bg-[#F1EFEB] p-3">
+          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Score de risco</div>
+          <div className="mt-1 text-lg font-semibold">812</div>
+          <div className={`mt-1 text-[11px] ${activeTab === "dossiers" ? "text-[#17664E]" : "text-[#9B641C]"}`}>{activeTab === "dossiers" ? "Baixo risco" : activeTab === "research" ? "2 alertas mapeados" : "Nenhuma restrição"}</div>
+        </div>
+        <div className="col-span-2 rounded-lg bg-[#F1EFEB] p-3 sm:col-span-1">
+          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Prazo</div>
+          <div className="mt-1 text-lg font-semibold">36 meses</div>
+          <div className="mt-1 text-[11px] text-black/45">Com garantias</div>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-[1.35fr_1fr]">
+        <div className="rounded-lg border border-black/10 p-4">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wide text-black/55">{activeTab === "dossiers" ? "Geração de caixa" : activeTab === "research" ? "Cobertura de garantias" : "Consultas concluídas"}</span>
+            <span className="text-xs text-black/45">{activeTab === "dossiers" ? "Últimos 6 meses" : activeTab === "research" ? "87% do limite" : "6 verificações"}</span>
+          </div>
+          <div className="flex h-32 items-end gap-2 border-b border-l border-black/10 px-3 pt-3">
+            {[45, 61, 54, 76, 68, 94].map((height, index) => (
+              <div key={index} className="flex flex-1 flex-col justify-end gap-1">
+                <div className={`rounded-t-sm ${index === 5 ? "bg-[#2F8B6D]" : activeTab === "dossiers" ? "bg-[#A6E1CE]" : activeTab === "research" ? "bg-[#E3C593]" : "bg-[#79BCA8]"}`} style={{ height: `${activeTab === "dossiers" ? height : activeTab === "research" ? [70, 70, 58, 58, 87, 87][index] : [85, 85, 85, 65, 100, 100][index]}%` }} />
+                <span className="pb-1 text-center text-[9px] text-black/40">{activeTab === "dossiers" ? `M${index + 1}` : activeTab === "research" ? `G${index + 1}` : `C${index + 1}`}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-lg border border-black/10 p-4">
+          <div className="mb-4 text-xs font-semibold uppercase tracking-wide text-black/55">{activeTab === "dossiers" ? "Indicadores" : activeTab === "research" ? "Pontos de atenção" : "Verificações"}</div>
+          <div className="space-y-3">
+            {(activeTab === "dossiers" ? factors : activeTab === "research" ? [
+              { label: "Recebíveis cedidos", value: "Monitorar", tone: "bg-[#E3C593]" },
+              { label: "Alienação fiduciária", value: "Regular", tone: "bg-[#A6E1CE]" },
+              { label: "Concentração", value: "18%", tone: "bg-[#E3C593]" },
+            ] : [
+              { label: "PEP e sanções", value: "Aprovado", tone: "bg-[#A6E1CE]" },
+              { label: "Mídia adversa", value: "Nenhum achado", tone: "bg-[#A6E1CE]" },
+              { label: "Processos", value: "Monitorar", tone: "bg-[#E3C593]" },
+            ]).map((factor) => (
+              <div key={factor.label}>
+                <div className="mb-1 flex justify-between text-[11px] text-black/55"><span>{factor.label}</span><span className="font-semibold text-[#272125]">{factor.value}</span></div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-black/8"><div className={`h-full rounded-full ${factor.tone}`} style={{ width: factor.label === "Endividamento" ? "57%" : activeTab === "dossiers" ? "78%" : activeTab === "research" ? "64%" : "90%" }} /></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FeatureVisual({ type }: { type: string }) {
   if (type === "evidence") {
     return (
@@ -246,16 +329,8 @@ function FeatureVisual({ type }: { type: string }) {
 }
 
 export default function Home() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!email.trim()) return;
-    setSubmitted(true);
-    setEmail("");
-  };
+  const [creditViewTab, setCreditViewTab] = useState<"dossiers" | "research" | "compliance">("dossiers");
 
   return (
     <div className="min-h-screen bg-[#F0EDEF] text-[#272125] selection:bg-[#272125] selection:text-[#F8F6F8]">
@@ -272,10 +347,10 @@ export default function Home() {
           </a>
         </div>
         <div className="flex items-center gap-4">
-          <a href="#" className="hidden text-base font-medium text-[#272125] transition-opacity hover:opacity-70 sm:block">
+          <a href={whatsappHref} target="_blank" rel="noreferrer" className="hidden text-base font-medium text-[#272125] transition-opacity hover:opacity-70 sm:block">
             Fale conosco
           </a>
-          <a href="#invite" className="rounded-full bg-[#272125] px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-[#272125]/90">
+          <a href={demoHref} target="_blank" rel="noreferrer" className="rounded-full bg-[#272125] px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-[#272125]/90">
             Agendar demo
           </a>
         </div>
@@ -305,26 +380,17 @@ export default function Home() {
             </h1>
 
             <p className="mb-10 max-w-lg text-lg font-light leading-relaxed text-white/80">
-              Elimine horas de trabalho operacional. A Nivi automatiza pesquisas, consolida informações de centenas de fontes e organiza tudo em um único ambiente para apoiar seu analista durante a análise.
+              Elimine horas de trabalho operacional. A Nivi automatiza pesquisas, consolida informações e cria estudos de crédito alinhados à política da instituição.
             </p>
 
-            <form
-              id="invite"
-              onSubmit={handleSubmit}
-              className="flex w-full max-w-md items-center rounded-full border border-white/10 bg-white/10 p-1.5 backdrop-blur-sm transition-all focus-within:ring-2 focus-within:ring-white/30"
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder={submitted ? "Convite solicitado" : "Digite seu email corporativo"}
-                className="min-w-0 flex-1 border-none bg-transparent px-4 text-base font-medium text-white placeholder:text-white/50 focus:outline-none"
-              />
-              <button type="submit" className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-white/90 sm:px-6">
-                Começar agora
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </form>
+            <div className="inline-flex w-full max-w-md overflow-hidden rounded-xl border border-white/25 bg-white text-base font-medium shadow-sm sm:w-auto">
+              <a href="#about" className="flex flex-1 items-center justify-center bg-[#272125] px-6 py-3 text-white transition-colors hover:bg-[#272125]/90 sm:flex-none">
+                Conheça a solução
+              </a>
+              <a href={demoHref} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center px-6 py-3 text-[#272125] transition-colors hover:bg-[#F8F6F8] sm:flex-none">
+                Agendar demo
+              </a>
+            </div>
           </motion.div>
 
           <motion.div
@@ -361,18 +427,49 @@ export default function Home() {
           </a>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {features.map((feature) => (
-            <article key={feature.title} className="rounded-3xl border border-black/[0.03] bg-[#EFECEE] p-2 pb-8">
-              <div className="mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-black/5 bg-white">
-                <FeatureVisual type={feature.visual} />
-              </div>
-              <div className="px-6">
-                <h3 className="mb-2 text-lg font-medium text-[#272125]">{feature.title}</h3>
-                <p className="text-base font-light leading-relaxed text-[#272125]/70">{feature.copy}</p>
-              </div>
-            </article>
-          ))}
+        <div className="mx-auto max-w-[90rem]">
+          <div className="mb-4 flex overflow-x-auto px-2 sm:px-4">
+            <div className="inline-flex items-center gap-1 rounded-2xl border border-[#272125]/10 bg-[#3A3035]/90 p-1.5 shadow-[0_6px_18px_rgba(0,0,0,0.2)] backdrop-blur-sm">
+              {[
+                { id: "dossiers", label: "Dossiês", icon: FileText },
+                { id: "research", label: "Pesquisas", icon: Search },
+                { id: "compliance", label: "Compliance", icon: Lock },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setCreditViewTab(tab.id as "dossiers" | "research" | "compliance")}
+                  className={`flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${creditViewTab === tab.id ? "bg-[#1E181B] text-white" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+                >
+                  <tab.icon className="h-3.5 w-3.5" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative isolate overflow-hidden rounded-[2rem] bg-[#30272B] px-6 py-12 sm:px-10 lg:min-h-[590px] lg:px-20 lg:py-16">
+            <div className="pointer-events-none absolute inset-0 -z-10 opacity-25" style={{ backgroundImage: "repeating-radial-gradient(ellipse at 15% 105%, transparent 0 52px, #D8D0D4 54px 58px, transparent 60px 102px)" }} />
+            <div className="grid items-center gap-10 lg:grid-cols-[1.5fr_0.75fr] lg:gap-16">
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, ease: "easeOut" }} className="order-2 lg:order-1">
+                <CreditStudyMockup activeTab={creditViewTab} />
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }} className="order-1 space-y-3 lg:order-2">
+                <div className="rounded-xl bg-[#171516] p-5 text-white shadow-xl">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold">Prompt</div>
+                  <p className="text-sm leading-relaxed text-white/72">Analise o pedido de crédito do Grupo Horizonte. Consolide balanços, SCR, garantias e comportamento de pagamento. Recomende limite, prazo e pontos de atenção para o comitê.</p>
+                </div>
+                <div className="rounded-xl bg-[#171516] p-5 text-white shadow-xl">
+                  <div className="mb-3 text-sm font-semibold">Fontes conectadas</div>
+                  <div className="space-y-2">
+                    {["Dados financeiros", "SCR e endividamento", "Documentos e garantias"].map((source) => (
+                      <div key={source} className="flex items-center gap-3 rounded-lg border border-white/10 px-3 py-2.5 text-sm text-white/85"><span className="flex h-6 w-6 items-center justify-center rounded bg-[#2F8B6D] text-white"><Database className="h-3.5 w-3.5" /></span>{source}<Check className="ml-auto h-4 w-4 text-[#A6E1CE]" /></div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -503,57 +600,58 @@ export default function Home() {
                 ))}
               </ul>
 
-              <button
-                className={`mt-auto w-full rounded-full border px-8 py-4 text-base font-semibold transition-colors ${plan.highlighted
+              <a
+                href={demoHref}
+                target="_blank"
+                rel="noreferrer"
+                className={`mt-auto w-full rounded-full border px-8 py-4 text-center text-base font-semibold transition-colors ${plan.highlighted
                     ? "border-[#272125] bg-[#272125] text-white shadow-[0_6px_14px_rgba(39,33,37,0.18)] hover:bg-[#272125]/90"
                     : "border-[#272125]/8 bg-[#DDD8DC] text-[#272125] hover:bg-[#D6D0D5]"
                   }`}
               >
-                Solicitar acesso
-              </button>
+                Fale com especialista
+              </a>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
+      <section id="invite" className="mx-auto max-w-7xl px-6 py-20">
         <div className="rounded-[2rem] bg-[#E5E0E3] px-8 py-20 text-center">
           <h2 className="mx-auto mb-6 max-w-2xl font-serif text-4xl leading-[1.1] text-[#272125] sm:text-5xl">
-            Pronto para reduzir a espera na análise de crédito?
+            Pronto para acelerar o crédito da sua companhia com a Nivi?
           </h2>
           <p className="mx-auto mb-10 max-w-xl text-lg font-light leading-relaxed text-[#272125]/70">
-            Entre na lista para um piloto com sua equipe e veja a Nivi trabalhando com documentos reais.
+            Agende uma demonstração e veja como a Nivi acelera a análise de crédito da sua equipe com documentos reais.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a href="#invite" className="w-full rounded-full bg-[#272125] px-8 py-3 text-center text-base font-medium text-white shadow-md transition-colors hover:bg-[#272125]/90 sm:w-auto">
-              Solicitar piloto
+            <a href={demoHref} target="_blank" rel="noreferrer" className="w-full rounded-full bg-[#272125] px-8 py-3 text-center text-base font-medium text-white shadow-md transition-colors hover:bg-[#272125]/90 sm:w-auto">
+              Agendar demo
             </a>
-            <a href="#about" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-black/5 sm:w-auto">
-              Ver produto <ArrowRight className="h-4 w-4" />
+            <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#272125] transition-colors hover:bg-black/5 sm:w-auto">
+              Fale conosco <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
       </section>
 
       <footer className="mt-10 border-t border-black/[0.05] bg-[#EFECEE] pb-12 pt-20">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-5">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-6">
           <div className="md:col-span-2">
             <div className="mb-4 font-serif text-3xl text-[#272125]">Nivi.</div>
             <p className="max-w-md text-base font-light leading-relaxed text-[#272125]/60">
-              IA para crédito com rastreabilidade, segurança e foco no trabalho real do analista.
+              Sua assistente para otimizar sua operação e ir para o próximo nível.
             </p>
           </div>
           {[
             ["Produto", "Features", "Planos"],
-            ["Empresa", "Sobre", "Contato", "Carreiras"],
-            ["Legal", "Termos", "Privacidade", "LGPD"],
           ].map(([heading, ...links]) => (
             <div key={heading}>
               <div className="mb-4 text-base font-medium text-[#272125]">{heading}</div>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-base font-light text-[#272125]/60 transition-colors hover:text-[#272125]">
+                    <a href={link === "Features" ? "#about" : link === "Planos" ? "#pricing" : "#"} className="text-base font-light text-[#272125]/60 transition-colors hover:text-[#272125]">
                       {link}
                     </a>
                   </li>
@@ -561,6 +659,23 @@ export default function Home() {
               </ul>
             </div>
           ))}
+          <div>
+            <div className="mb-4 text-base font-medium text-[#272125]">Social</div>
+            <ul className="space-y-3">
+              <li>
+                <a href="#" className="text-base font-light text-[#272125]/60 transition-colors hover:text-[#272125]">
+                  LinkedIn
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="md:col-span-2">
+            <div className="mb-4 text-base font-medium text-[#272125]">Contato</div>
+            <div className="space-y-3 text-base font-light leading-relaxed text-[#272125]/60">
+              <p>(11) 97172-8811</p>
+              <p>Rua Hungria, 888, 8º andar - Jardim Europa, São Paulo, SP 01455-905, BR</p>
+            </div>
+          </div>
         </div>
         <div className="mx-auto mt-16 flex max-w-7xl flex-col gap-4 px-6 text-sm font-light text-[#272125]/50 md:flex-row md:items-center md:justify-between">
           <span>© {new Date().getFullYear()} Nivi. Todos os direitos reservados.</span>
