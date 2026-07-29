@@ -108,9 +108,9 @@ const faqs = [
       "Sim. Sempre que aplicável, a Nivi apresenta as fontes utilizadas para fundamentar cada informação e conclusão, permitindo que o analista valide os dados e tome decisões com transparência e confiança.",
   },
   {
-    question: "Quais documentos posso analisar?",
+    question: "Consigo integrar em nosso ERP?",
     answer:
-      "Praticamente qualquer documento. A Nivi analisa desde demonstrativos financeiros e contratos até documentos societários, certidões, comprovantes e outros arquivos utilizados na análise de crédito.",
+      "Sim. A Nivi pode ser integrada ao ERP da sua empresa por API para receber dados e documentos diretamente do fluxo atual. Se preferir, também é possível utilizar a solução em formato white-label dentro do próprio ERP.",
   },
 ];
 
