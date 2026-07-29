@@ -114,6 +114,8 @@ const faqs = [
   },
 ];
 
+type CreditViewTab = "dossiers" | "research" | "compliance" | "sector" | "legal" | "comparison";
+
 function DashboardMockup() {
   return (
     <div className="w-full max-w-2xl overflow-hidden rounded-t-2xl border border-black/10 bg-white text-sm shadow-2xl">
@@ -199,77 +201,426 @@ function DashboardMockup() {
 function CreditStudyMockup({ activeTab }: { activeTab: "dossiers" | "research" | "compliance" }) {
   const tabContent = {
     dossiers: { title: "Estudo de crédito", subtitle: "Grupo Horizonte Ltda. · Atualizado agora", status: "Recomendado" },
-    research: { title: "Pesquisa cadastral", subtitle: "Grupo Horizonte Ltda. · 12 fontes consultadas", status: "Em análise" },
+    research: { title: "Pesquisa cadastral", subtitle: "Grupo Horizonte Ltda. · Notícias e bases públicas", status: "Em análise" },
     compliance: { title: "Verificação de compliance", subtitle: "Grupo Horizonte Ltda. · Última checagem agora", status: "Sem bloqueios" },
   }[activeTab];
-  const factors = [
-    { label: "Liquidez", value: "1,42x", tone: "bg-[#A6E1CE]" },
-    { label: "Endividamento", value: "2,1x", tone: "bg-[#E3C593]" },
-    { label: "Cobertura DSCR", value: "1,58x", tone: "bg-[#79BCA8]" },
-  ];
+  const aiResponse = {
+    dossiers: {
+      question: "Qual limite faz sentido para esta operação?",
+      answer: "Com base nos demonstrativos financeiros, Nuclea e SCR, recomendo seguir com limite moderado e acompanhamento trimestral.",
+      proof: ["Demonstrativos financeiros mostram geração de caixa preservada.", "Nuclea confirma comportamento compatível de recebíveis.", "SCR não indica deterioração relevante no curto prazo."],
+    },
+    research: {
+      question: "Há notícias desabonadoras relevantes?",
+      answer: "Encontrei dois achados que merecem validação antes do parecer final. Eles não bloqueiam a análise isoladamente, mas devem ser citados.",
+      proof: ["Busca web encontrou reportagem setorial com ação civil relacionada.", "Base pública indica ocorrência recente a confirmar.", "Certidão consultada não trouxe bloqueio impeditivo."],
+    },
+    compliance: {
+      question: "Existem restrições de compliance?",
+      answer: "Não encontrei matches em sanções nacionais ou internacionais. As certidões consultadas indicam regularidade nas principais frentes públicas.",
+      proof: ["Sanções nacionais consultadas sem apontamentos.", "Sanções internacionais verificadas sem correspondência.", "Certidões fiscais e trabalhistas conferidas."],
+    },
+  }[activeTab];
+  const connectors =
+    activeTab === "research"
+      ? ["Busca web"]
+      : activeTab === "compliance"
+        ? ["Sanções nacionais", "Sanções internacionais", "Certidões"]
+        : ["Demonstrativos financeiros", "Nuclea", "SCR"];
+  const finalChecks =
+    activeTab === "research"
+      ? ["2 achados para validação", "Fontes públicas citadas", "Parecer pendente de revisão"]
+      : activeTab === "compliance"
+        ? ["Sanções nacionais sem match", "Sanções internacionais sem match", "Certidões conferidas"]
+        : ["Limite sugerido registrado", "Fontes anexadas ao parecer", "Revisão humana pendente"];
 
   return (
-    <div className="w-full max-w-[41rem] overflow-hidden rounded-xl border border-black/10 bg-[#fbfdfb] p-5 text-[#23342a] shadow-2xl sm:p-7">
-      <div className="mb-5 flex items-start justify-between gap-4 border-b border-black/10 pb-4">
-        <div>
-          <div className="font-serif text-xl sm:text-2xl">{tabContent.title}</div>
-          <div className="mt-1 text-xs text-black/50">{tabContent.subtitle}</div>
+    <div className="w-full max-w-[47rem] overflow-hidden rounded-xl border border-black/10 bg-[#f8fbf9] text-[#23342a] shadow-2xl">
+      <div className="flex items-center justify-between gap-4 border-b border-black/10 bg-white px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E3C593]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#A6E1CE]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#79BCA8]" />
+          </div>
+          <span className="text-xs font-semibold text-black/45">Nivi workspace</span>
         </div>
         <span className="shrink-0 rounded-full border border-[#2F8B6D]/30 bg-[#E4F5EE] px-3 py-1 text-xs font-semibold text-[#17664E]">{tabContent.status}</span>
       </div>
 
+      <div className="p-5 sm:p-7">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <div className="font-serif text-xl sm:text-2xl">{tabContent.title}</div>
+          <div className="mt-1 text-xs text-black/50">{tabContent.subtitle}</div>
+        </div>
+      </div>
+
+      <div className="mb-5 rounded-lg border border-[#2F8B6D]/20 bg-white p-4">
+        <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-[#17664E]">
+          <Sparkles className="h-4 w-4" />
+          Resposta da Nivi
+        </div>
+        <div className="mb-3 rounded-lg bg-[#edf2ef] p-3">
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-black/40">Pergunta</div>
+          <div className="text-sm font-medium leading-relaxed text-[#23342a]">{aiResponse.question}</div>
+        </div>
+        <p className="text-sm leading-relaxed text-[#23342a]/78">{aiResponse.answer}</p>
+        <div className="mt-4 border-t border-black/10 pt-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-black/40">Connectors</div>
+          <div className="flex flex-wrap gap-2">
+            {connectors.map((connector) => (
+              <span key={connector} className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-[#fbfdfb] px-2.5 py-1 text-[11px] font-semibold text-[#23342a]/70">
+                <Database className="h-3 w-3 text-[#2F8B6D]" />
+                {connector}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-lg bg-[#edf2ef] p-3">
-          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Limite sugerido</div>
-          <div className="mt-1 text-lg font-semibold">R$ 2,4 mi</div>
-          <div className="mt-1 text-[11px] text-[#17664E]">↑ 12% vs. anterior</div>
+          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Evidência 1</div>
+          <div className="mt-1 line-clamp-2 text-xs font-semibold leading-snug">{aiResponse.proof[0]}</div>
+          <div className="mt-2 text-[11px] text-[#17664E]">Fonte citada</div>
         </div>
         <div className="rounded-lg bg-[#edf2ef] p-3">
-          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Score de risco</div>
-          <div className="mt-1 text-lg font-semibold">812</div>
-          <div className={`mt-1 text-[11px] ${activeTab === "dossiers" ? "text-[#17664E]" : "text-[#9B641C]"}`}>{activeTab === "dossiers" ? "Baixo risco" : activeTab === "research" ? "2 alertas mapeados" : "Nenhuma restrição"}</div>
+          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Evidência 2</div>
+          <div className="mt-1 line-clamp-2 text-xs font-semibold leading-snug">{aiResponse.proof[1]}</div>
+          <div className="mt-2 text-[11px] text-[#17664E]">Verificada</div>
         </div>
         <div className="col-span-2 rounded-lg bg-[#edf2ef] p-3 sm:col-span-1">
-          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Prazo</div>
-          <div className="mt-1 text-lg font-semibold">36 meses</div>
-          <div className="mt-1 text-[11px] text-black/45">Com garantias</div>
+          <div className="text-[10px] font-medium uppercase tracking-wide text-black/45">Evidência 3</div>
+          <div className="mt-1 line-clamp-2 text-xs font-semibold leading-snug">{aiResponse.proof[2]}</div>
+          <div className="mt-2 text-[11px] text-black/45">Incluída no parecer</div>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-[1.35fr_1fr]">
         <div className="rounded-lg border border-black/10 p-4">
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wide text-black/55">{activeTab === "dossiers" ? "Geração de caixa" : activeTab === "research" ? "Cobertura de garantias" : "Consultas concluídas"}</span>
-            <span className="text-xs text-black/45">{activeTab === "dossiers" ? "Últimos 6 meses" : activeTab === "research" ? "87% do limite" : "6 verificações"}</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-black/55">Trecho do parecer</span>
+            <span className="text-xs text-black/45">Gerado agora</span>
           </div>
-          <div className="flex h-32 items-end gap-2 border-b border-l border-black/10 px-3 pt-3">
-            {[45, 61, 54, 76, 68, 94].map((height, index) => (
-              <div key={index} className="flex flex-1 flex-col justify-end gap-1">
-                <div className={`rounded-t-sm ${index === 5 ? "bg-[#2F8B6D]" : activeTab === "dossiers" ? "bg-[#A6E1CE]" : activeTab === "research" ? "bg-[#E3C593]" : "bg-[#79BCA8]"}`} style={{ height: `${activeTab === "dossiers" ? height : activeTab === "research" ? [70, 70, 58, 58, 87, 87][index] : [85, 85, 85, 65, 100, 100][index]}%` }} />
-                <span className="pb-1 text-center text-[9px] text-black/40">{activeTab === "dossiers" ? `M${index + 1}` : activeTab === "research" ? `G${index + 1}` : `C${index + 1}`}</span>
-              </div>
-            ))}
-          </div>
+          {activeTab === "dossiers" || activeTab === "research" || activeTab === "compliance" ? (
+            <div className="space-y-2">
+              {(activeTab === "dossiers" ? [
+                ["Demonstrativos financeiros", "Geração de caixa sustenta limite moderado", "Recomendado"],
+                ["Nuclea", "Recebíveis compatíveis com volume operacional", "Conferida"],
+                ["SCR", "Endividamento sem deterioração relevante", "Monitorar"],
+              ] : activeTab === "research" ? [
+                ["Jornal econômico", "Ação civil citada em reportagem setorial", "Relevante"],
+                ["Diário oficial", "Certidão pública conferida sem bloqueio", "Conferida"],
+                ["Base de protestos", "Ocorrência recente exige validação", "Monitorar"],
+              ] : [
+                ["Sanções nacionais", "CEIS, CNEP e listas restritivas consultadas", "Sem match"],
+                ["Sanções internacionais", "OFAC, ONU e União Europeia verificadas", "Sem match"],
+                ["Certidões", "Regularidade fiscal e trabalhista conferida", "Conferida"],
+              ]).map(([source, title, status]) => (
+                <div key={title} className="rounded-lg border border-black/10 bg-white p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-black/40">{source}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${status === "Conferida" || status === "Sem match" ? "bg-[#E4F5EE] text-[#17664E]" : "bg-[#F3E6CF] text-[#9B641C]"}`}>{status}</span>
+                  </div>
+                  <div className="mt-1 text-xs font-medium leading-snug text-[#23342a]">{title}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex h-32 items-end gap-2 border-b border-l border-black/10 px-3 pt-3">
+              {[45, 61, 54, 76, 68, 94].map((height, index) => (
+                <div key={index} className="flex flex-1 flex-col justify-end gap-1">
+                  <div className={`rounded-t-sm ${index === 5 ? "bg-[#2F8B6D]" : activeTab === "dossiers" ? "bg-[#A6E1CE]" : "bg-[#79BCA8]"}`} style={{ height: `${activeTab === "dossiers" ? height : [85, 85, 85, 65, 100, 100][index]}%` }} />
+                  <span className="pb-1 text-center text-[9px] text-black/40">{activeTab === "dossiers" ? `M${index + 1}` : `C${index + 1}`}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="rounded-lg border border-black/10 p-4">
-          <div className="mb-4 text-xs font-semibold uppercase tracking-wide text-black/55">{activeTab === "dossiers" ? "Indicadores" : activeTab === "research" ? "Pontos de atenção" : "Verificações"}</div>
-          <div className="space-y-3">
-            {(activeTab === "dossiers" ? factors : activeTab === "research" ? [
-              { label: "Recebíveis cedidos", value: "Monitorar", tone: "bg-[#E3C593]" },
-              { label: "Alienação fiduciária", value: "Regular", tone: "bg-[#A6E1CE]" },
-              { label: "Concentração", value: "18%", tone: "bg-[#E3C593]" },
-            ] : [
-              { label: "PEP e sanções", value: "Aprovado", tone: "bg-[#A6E1CE]" },
-              { label: "Mídia adversa", value: "Nenhum achado", tone: "bg-[#A6E1CE]" },
-              { label: "Processos", value: "Monitorar", tone: "bg-[#E3C593]" },
-            ]).map((factor) => (
-              <div key={factor.label}>
-                <div className="mb-1 flex justify-between text-[11px] text-black/55"><span>{factor.label}</span><span className="font-semibold text-[#23342a]">{factor.value}</span></div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-black/8"><div className={`h-full rounded-full ${factor.tone}`} style={{ width: factor.label === "Endividamento" ? "57%" : activeTab === "dossiers" ? "78%" : activeTab === "research" ? "64%" : "90%" }} /></div>
+          <div className="mb-4 text-xs font-semibold uppercase tracking-wide text-black/55">Validações</div>
+          <div className="space-y-2">
+            {finalChecks.map((check) => (
+              <div key={check} className="flex items-start gap-2 rounded-lg bg-white p-2.5 text-[11px] font-medium leading-snug text-[#23342a]/75">
+                <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#2F8B6D]" />
+                {check}
               </div>
             ))}
           </div>
         </div>
+      </div>
+      </div>
+    </div>
+  );
+}
+
+function ClaudeStyleMockup({ activeTab }: { activeTab: CreditViewTab }) {
+  const chart = {
+    dossiers: {
+      type: "donut",
+      title: "Composição da recomendação",
+      center: "R$ 2,4 mi",
+      data: [
+        { label: "Caixa", value: "45%", color: "#2F8B6D" },
+        { label: "Recebíveis", value: "35%", color: "#E3C593" },
+        { label: "SCR", value: "20%", color: "#79BCA8" },
+      ],
+    },
+    research: {
+      type: "funnel",
+      title: "Triagem de notícias",
+      data: [
+        { label: "Notícias analisadas", value: "18", width: "100%" },
+        { label: "Menções relevantes", value: "6", width: "72%" },
+        { label: "Achados desabonadores", value: "2", width: "44%" },
+      ],
+    },
+    compliance: {
+      type: "donut",
+      title: "Status das verificações",
+      center: "0 matches",
+      data: [
+        { label: "Sanções nacionais", value: "40%", color: "#2F8B6D" },
+        { label: "Sanções internacionais", value: "35%", color: "#79BCA8" },
+        { label: "Certidões", value: "25%", color: "#E3C593" },
+      ],
+    },
+    sector: {
+      type: "bars",
+      title: "Benchmark setorial",
+      data: [
+        { label: "Demanda", value: 78, color: "#2F8B6D" },
+        { label: "Margem", value: 54, color: "#C1648B" },
+        { label: "Ciclo de caixa", value: 62, color: "#E3C593" },
+        { label: "Alavancagem", value: 48, color: "#79BCA8" },
+      ],
+    },
+    legal: {
+      type: "bars",
+      title: "Distribuição jurídica",
+      data: [
+        { label: "Cível", value: 42, color: "#8F9779" },
+        { label: "Trabalhista", value: 28, color: "#C89A4B" },
+        { label: "Fiscal", value: 18, color: "#6FA0CF" },
+        { label: "Protestos", value: 12, color: "#D97859" },
+      ],
+    },
+    comparison: {
+      type: "comparison",
+      title: "Indicadores comparativos",
+      data: [
+        { label: "Liquidez", acme: 82, beta: 61 },
+        { label: "Crescimento", acme: 58, beta: 76 },
+        { label: "Endividamento", acme: 42, beta: 68 },
+      ],
+    },
+  } as const;
+  const activeChart = chart[activeTab];
+  const view = {
+    dossiers: {
+      bg: "#D97859",
+      line: "rgba(142, 73, 52, 0.28)",
+      prompt: "Analise o pedido de crédito do Grupo Horizonte. Use demonstrativos financeiros, Nuclea e SCR para gerar um dossiê objetivo para o comitê.",
+      attachments: [
+        ["Demonstrativos financeiros", "xlsx"],
+        ["Nuclea", "api"],
+        ["SCR", "pdf"],
+      ],
+      title: "Dossiê de crédito do Grupo Horizonte",
+      lead: "Recomendação de crédito",
+      body: "A operação apresenta capacidade de pagamento compatível com uma exposição moderada. A geração de caixa segue preservada e os recebíveis analisados na Nuclea são consistentes com o volume operacional informado.",
+      sections: [
+        ["Principais evidências", ["Demonstrativos indicam margem operacional estável", "Nuclea confirma recorrência de recebíveis", "SCR sem deterioração relevante no curto prazo"]],
+        ["Recomendação", ["Aprovar limite de R$ 2,4 mi", "Prazo sugerido de 36 meses", "Manter acompanhamento trimestral"]],
+      ],
+    },
+    research: {
+      bg: "#EBC8B7",
+      line: "rgba(121, 82, 64, 0.18)",
+      prompt: "Pesquise o Grupo Horizonte em notícias desabonadoras e bases públicas. Traga achados relevantes, fonte consultada e pontos que precisam de validação.",
+      attachments: [["Busca web", "web"]],
+      title: "Pesquisa pública e notícias desabonadoras",
+      lead: "Resumo executivo",
+      body: "A busca web encontrou dois achados que merecem validação antes do parecer final. Nenhum item identificado bloqueia a análise isoladamente, mas os sinais devem ser registrados para revisão do analista.",
+      sections: [
+        ["Achados encontrados", ["Reportagem setorial cita ação civil envolvendo empresa relacionada", "Ocorrência recente em base pública exige confirmação documental", "Certidão pública consultada sem bloqueio impeditivo"]],
+        ["Próximos passos", ["Validar os dois achados", "Anexar fontes no dossiê", "Registrar ressalva no parecer"]],
+      ],
+    },
+    compliance: {
+      bg: "#6FA0CF",
+      line: "rgba(43, 88, 125, 0.22)",
+      prompt: "Verifique o Grupo Horizonte em sanções nacionais, sanções internacionais e certidões. Sinalize restrições, pendências e bases consultadas.",
+      attachments: [
+        ["Sanções nacionais", "api"],
+        ["Sanções internacionais", "api"],
+        ["Certidões", "pdf"],
+      ],
+      title: "Verificação de compliance do Grupo Horizonte",
+      lead: "Resultado da checagem",
+      body: "Não foram encontrados matches em sanções nacionais ou internacionais. As certidões consultadas indicam regularidade nas principais frentes públicas e não há bloqueio automático para continuidade da análise.",
+      sections: [
+        ["Bases consultadas", ["CEIS, CNEP e listas restritivas nacionais sem apontamentos", "OFAC, ONU e União Europeia sem correspondência", "Certidões fiscais e trabalhistas conferidas"]],
+        ["Conclusão", ["Análise pode seguir", "Manter trilha de auditoria das consultas", "Revisão humana recomendada antes do comitê"]],
+      ],
+    },
+    sector: {
+      bg: "#C1648B",
+      line: "rgba(113, 44, 78, 0.22)",
+      prompt: "Compare o Grupo Horizonte com empresas do mesmo setor. Explique tendências, pressão de margem, ciclo de caixa e riscos macro que afetam a decisão de crédito.",
+      attachments: [
+        ["Dados setoriais", "csv"],
+        ["Indicadores macro", "api"],
+        ["Benchmark de pares", "xlsx"],
+      ],
+      title: "Análise setorial do Grupo Horizonte",
+      lead: "Contexto competitivo",
+      body: "O setor mostra crescimento moderado, mas com pressão de margem e alongamento do ciclo financeiro. O Grupo Horizonte performa próximo à mediana dos pares, com melhor recorrência de receita e menor folga de liquidez.",
+      sections: [
+        ["Tendências do setor", ["Demanda segue resiliente, mas com desaceleração em novos contratos", "Custos operacionais pressionam margem no curto prazo", "Pares estão reduzindo alavancagem para preservar caixa"]],
+        ["Impacto no crédito", ["Manter limite conservador", "Acompanhar margem bruta e ciclo de recebimento", "Revisar exposição se houver deterioração setorial"]],
+      ],
+    },
+    legal: {
+      bg: "#8F9779",
+      line: "rgba(52, 82, 50, 0.22)",
+      prompt: "Analise processos, certidões e pendências jurídicas do Grupo Horizonte. Destaque riscos relevantes, natureza das ações e impacto potencial no crédito.",
+      attachments: [
+        ["Processos judiciais", "api"],
+        ["Certidões", "pdf"],
+        ["Protestos", "csv"],
+      ],
+      title: "Resumo jurídico do Grupo Horizonte",
+      lead: "Riscos identificados",
+      body: "A análise jurídica encontrou volume administrável de processos, sem execução relevante que impeça a continuidade da operação. Há uma ação trabalhista em acompanhamento e certidões principais conferidas.",
+      sections: [
+        ["Achados jurídicos", ["Processos cíveis sem concentração material", "Ação trabalhista recente deve ser monitorada", "Certidões principais sem bloqueio impeditivo"]],
+        ["Recomendação", ["Anexar certidões ao dossiê", "Solicitar atualização antes da contratação", "Manter ressalva jurídica no parecer"]],
+      ],
+    },
+    comparison: {
+      bg: "#C89A4B",
+      line: "rgba(105, 75, 31, 0.22)",
+      prompt: "Compare Acme Ltda e Beta Ltda para uma decisão de crédito. Mostre diferenças de liquidez, endividamento, comportamento de pagamento e risco operacional.",
+      attachments: [
+        ["Acme Ltda", "xlsx"],
+        ["Beta Ltda", "xlsx"],
+        ["SCR comparativo", "pdf"],
+      ],
+      title: "Comparação: Acme Ltda x Beta Ltda",
+      lead: "Resumo comparativo",
+      body: "A Acme Ltda apresenta melhor liquidez e menor volatilidade de caixa, enquanto a Beta Ltda tem maior crescimento, porém com endividamento mais pressionado. Para crédito recorrente, a Acme Ltda oferece perfil mais previsível.",
+      sections: [
+        ["Diferenças principais", ["Acme Ltda tem ciclo de caixa mais curto", "Beta Ltda cresce mais, mas consome mais capital de giro", "SCR da Beta Ltda indica maior concentração bancária"]],
+        ["Decisão sugerida", ["Priorizar Acme Ltda para limite maior", "Aprovar Beta Ltda com prazo menor", "Reavaliar ambas após fechamento trimestral"]],
+      ],
+    },
+  }[activeTab];
+
+  return (
+    <div
+      className="relative min-h-[36rem] overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 lg:px-16 lg:py-14"
+      style={{
+        backgroundColor: view.bg,
+        backgroundImage: `repeating-radial-gradient(ellipse at 18% 8%, transparent 0 92px, ${view.line} 96px 104px, transparent 108px 190px)`,
+      }}
+    >
+      <div className="grid min-h-[31rem] items-center gap-10 lg:grid-cols-[0.72fr_1.35fr]">
+        <div className="space-y-3 lg:max-w-sm">
+          <div className="rounded-xl bg-[#111111] p-4 text-white shadow-2xl">
+            <div className="mb-2 text-xs font-semibold">Prompt</div>
+            <p className="text-xs leading-relaxed text-white/80">{view.prompt}</p>
+          </div>
+
+          <div className="rounded-xl bg-[#111111] p-4 text-white shadow-2xl">
+            <div className="mb-3 text-xs font-semibold">Fontes conectadas</div>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+              {view.attachments.map(([name, kind]) => (
+                <div key={name} className="min-h-20 rounded-lg border border-white/15 p-3">
+                  <div className="text-xs font-semibold leading-snug text-white">{name}</div>
+                  <div className="mt-1 text-[11px] text-white/55">{kind}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <article className="min-h-[31rem] rounded-xl bg-[#F7F4EE] px-7 py-8 text-black shadow-2xl sm:px-10 lg:px-12">
+          <h3 className="max-w-2xl font-serif text-[2.15rem] leading-[1.05] text-black sm:text-[2.75rem]">
+            {view.title}
+          </h3>
+          <h4 className="mt-7 font-serif text-2xl leading-tight text-black sm:text-3xl">{view.lead}</h4>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-black/80">{view.body}</p>
+
+          <div className="mt-6 rounded-lg border border-black/10 bg-white p-4">
+            <div className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-black/45">{activeChart.title}</div>
+            {activeChart.type === "donut" && (
+              <div className="grid items-center gap-4 sm:grid-cols-[9rem_1fr]">
+                <div className="relative h-32 w-32 rounded-full" style={{ background: `conic-gradient(${activeChart.data[0].color} 0 45%, ${activeChart.data[1].color} 45% 80%, ${activeChart.data[2].color} 80% 100%)` }}>
+                  <div className="absolute inset-5 flex items-center justify-center rounded-full bg-white text-center text-xs font-semibold leading-tight text-black">{activeChart.center}</div>
+                </div>
+                <div className="space-y-2">
+                  {activeChart.data.map((item) => (
+                    <div key={item.label} className="flex items-center justify-between gap-3 text-xs text-black/70">
+                      <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />{item.label}</span>
+                      <span className="font-semibold text-black">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {activeChart.type === "funnel" && (
+              <div className="space-y-2">
+                {activeChart.data.map((item) => (
+                  <div key={item.label} className="flex items-center gap-3">
+                    <div className="h-9 rounded-md bg-[#D97859] px-3 py-2 text-xs font-semibold text-white" style={{ width: item.width }}>{item.label}</div>
+                    <span className="text-sm font-semibold text-black">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {activeChart.type === "bars" && (
+              <div className="space-y-3">
+                {activeChart.data.map((item) => (
+                  <div key={item.label}>
+                    <div className="mb-1 flex justify-between text-xs text-black/60"><span>{item.label}</span><span className="font-semibold text-black">{item.value}</span></div>
+                    <div className="h-3 rounded-full bg-black/10"><div className="h-full rounded-full" style={{ width: `${item.value}%`, backgroundColor: item.color }} /></div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {activeChart.type === "comparison" && (
+              <div className="space-y-4">
+                {activeChart.data.map((item) => (
+                  <div key={item.label}>
+                    <div className="mb-1 text-xs font-semibold text-black/60">{item.label}</div>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2 text-[11px] text-black/65"><span className="w-16">Acme</span><div className="h-2.5 flex-1 rounded-full bg-black/10"><div className="h-full rounded-full bg-[#2F8B6D]" style={{ width: `${item.acme}%` }} /></div><span className="w-7 text-right font-semibold text-black">{item.acme}</span></div>
+                      <div className="flex items-center gap-2 text-[11px] text-black/65"><span className="w-16">Beta</span><div className="h-2.5 flex-1 rounded-full bg-black/10"><div className="h-full rounded-full bg-[#C89A4B]" style={{ width: `${item.beta}%` }} /></div><span className="w-7 text-right font-semibold text-black">{item.beta}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-7 space-y-6">
+            {view.sections.map(([heading, bullets]) => (
+              <section key={heading}>
+                <h5 className="font-serif text-xl leading-tight text-black">{heading}</h5>
+                <ul className="mt-3 space-y-2 text-sm leading-relaxed text-black/80">
+                  {(bullets as string[]).map((bullet) => (
+                    <li key={bullet} className="flex gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </article>
       </div>
     </div>
   );
@@ -330,7 +681,7 @@ function FeatureVisual({ type }: { type: string }) {
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [creditViewTab, setCreditViewTab] = useState<"dossiers" | "research" | "compliance">("dossiers");
+  const [creditViewTab, setCreditViewTab] = useState<CreditViewTab>("dossiers");
 
   return (
     <div className="min-h-screen bg-white text-[#23342a] selection:bg-[#23342a] selection:text-[#f6faf7]">
@@ -435,11 +786,14 @@ export default function Home() {
                 { id: "dossiers", label: "Dossiês", icon: FileText },
                 { id: "research", label: "Pesquisas", icon: Search },
                 { id: "compliance", label: "Compliance", icon: Lock },
+                { id: "sector", label: "Setorial", icon: BarChart3 },
+                { id: "legal", label: "Jurídico", icon: FileCheck2 },
+                { id: "comparison", label: "Comparação", icon: Users },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setCreditViewTab(tab.id as "dossiers" | "research" | "compliance")}
+                  onClick={() => setCreditViewTab(tab.id as CreditViewTab)}
                   className={`flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${creditViewTab === tab.id ? "bg-[#18231d] text-white" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
                 >
                   <tab.icon className="h-3.5 w-3.5" />
@@ -449,21 +803,33 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative isolate overflow-hidden rounded-[2rem] bg-[#1f3027] px-6 py-12 sm:px-10 lg:min-h-[590px] lg:px-20 lg:py-16">
-            <div className="pointer-events-none absolute inset-0 -z-10 opacity-25" style={{ backgroundImage: "repeating-radial-gradient(ellipse at 15% 105%, transparent 0 52px, #cbd9d0 54px 58px, transparent 60px 102px)" }} />
-            <div className="grid items-center gap-10 lg:grid-cols-[1.5fr_0.75fr] lg:gap-16">
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, ease: "easeOut" }} className="order-2 lg:order-1">
-                <CreditStudyMockup activeTab={creditViewTab} />
+          <div className="relative isolate overflow-hidden rounded-[2rem]">
+            <div className="grid items-center gap-10">
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, ease: "easeOut" }} className="w-full">
+                <ClaudeStyleMockup activeTab={creditViewTab} />
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }} className="order-1 space-y-3 lg:order-2">
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }} className="hidden">
                 <div className="rounded-xl bg-[#142019] p-5 text-white shadow-xl">
                   <div className="mb-3 flex items-center gap-2 text-sm font-semibold">Prompt</div>
-                  <p className="text-sm leading-relaxed text-white/72">Analise o pedido de crédito do Grupo Horizonte. Consolide balanços, SCR, garantias e comportamento de pagamento. Recomende limite, prazo e pontos de atenção para o comitê.</p>
+                  <p className="text-sm leading-relaxed text-white/72">
+                    {creditViewTab === "research"
+                      ? "Pesquise o Grupo Horizonte em notícias desabonadoras, certidões e bases públicas. Destaque achados relevantes, fontes verificadas e pontos que precisam de validação."
+                      : creditViewTab === "compliance"
+                        ? "Verifique o Grupo Horizonte em sanções nacionais, sanções internacionais e certidões. Sinalize restrições, pendências e bases consultadas."
+                        : "Analise o pedido de crédito do Grupo Horizonte. Consolide balanços, SCR, garantias e comportamento de pagamento. Recomende limite, prazo e pontos de atenção para o comitê."}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-[#142019] p-5 text-white shadow-xl">
                   <div className="mb-3 text-sm font-semibold">Fontes conectadas</div>
                   <div className="space-y-2">
-                    {["Dados financeiros", "SCR e endividamento", "Documentos e garantias"].map((source) => (
+                    {(creditViewTab === "research"
+                      ? ["Busca web"]
+                      : creditViewTab === "compliance"
+                        ? ["Sanções nacionais", "Sanções internacionais", "Certidões"]
+                      : creditViewTab === "dossiers"
+                        ? ["Demonstrativos financeiros", "Nuclea", "SCR"]
+                      : ["Demonstrativos financeiros", "Nuclea", "SCR"]
+                    ).map((source) => (
                       <div key={source} className="flex items-center gap-3 rounded-lg border border-white/10 px-3 py-2.5 text-sm text-white/85"><span className="flex h-6 w-6 items-center justify-center rounded bg-[#2F8B6D] text-white"><Database className="h-3.5 w-3.5" /></span>{source}<Check className="ml-auto h-4 w-4 text-[#A6E1CE]" /></div>
                     ))}
                   </div>
