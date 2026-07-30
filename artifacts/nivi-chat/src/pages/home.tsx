@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   ArrowRight,
   BarChart3,
+  BookOpen,
   Check,
   ChevronDown,
   ChevronRight,
@@ -12,12 +13,16 @@ import {
   FileText,
   Inbox,
   Lock,
+  PanelsTopLeft,
   Plus,
+  Plug,
   Search,
   Sparkles,
+  ArrowUp,
   Users,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import niviLogoAsset from "../../../../assets/logo.svg";
 
 const partnerLogos = ["Atlas Bank", "Cora", "Monet", "Aster", "Nexo", "Vértice"];
 
@@ -118,79 +123,57 @@ type CreditViewTab = "dossiers" | "research" | "compliance" | "sector" | "legal"
 
 function DashboardMockup() {
   return (
-    <div className="w-full max-w-2xl overflow-hidden rounded-t-2xl border border-black/10 bg-white text-sm shadow-2xl">
-      <div className="flex h-[500px] flex-col sm:flex-row">
-        <aside className="hidden w-56 shrink-0 flex-col gap-6 border-r border-black/5 bg-[#fbfdfb] p-4 sm:flex">
-          <div className="flex items-center justify-between rounded-lg border border-black/10 bg-white p-2">
-            <span className="flex items-center gap-2 font-medium text-[#23342a]">
-              <span className="flex h-5 w-5 items-center justify-center rounded bg-[#23342a] text-xs text-white">N</span>
-              Nivi
-            </span>
-            <ChevronDown className="h-4 w-4 text-black/40" />
+    <div className="w-full max-w-3xl overflow-hidden rounded-t-xl border border-black/10 bg-[#fcfbf9] text-sm shadow-2xl">
+      <div className="flex h-[500px]">
+        <aside className="flex w-44 shrink-0 flex-col border-r border-black/10 bg-[#f8f7f4] sm:w-52">
+          <div className="flex h-12 items-center justify-between border-b border-black/10 px-3 sm:px-4">
+            <span className="font-serif text-lg font-medium text-[#23342a]">Nivi</span>
+            <PanelsTopLeft className="h-4 w-4 text-[#282828]" />
           </div>
 
-          <div className="flex items-center gap-3 px-2 font-medium text-black/60">
-            <Search className="h-4 w-4" />
-            Buscar
-            <span className="ml-auto rounded border border-black/10 px-1.5 py-0.5 text-xs">⌘K</span>
-          </div>
+          <div className="space-y-4 px-3 py-2 sm:px-4">
+            <div className="flex items-center gap-2 bg-[#23342a] px-3 py-2 text-xs font-semibold text-white shadow-sm">
+              <Plus className="h-3.5 w-3.5" />
+              Nova conversa
+            </div>
 
-          <div className="space-y-1">
-            {[
-              { icon: Inbox, label: "Análises", count: "6", active: true },
-              { icon: Users, label: "Comitê", count: "10" },
-              { icon: Clock, label: "Pendentes", count: "3" },
-              { icon: FileText, label: "Rascunhos", count: "1" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className={`flex items-center gap-3 rounded-md px-2 py-1.5 font-medium ${item.active ? "bg-black/5 text-[#23342a]" : "text-black/60"
-                  }`}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-                <span className="ml-auto text-xs text-black/50">{item.count}</span>
+            <div className="space-y-4 px-2 text-xs font-semibold text-[#282828]">
+              <div className="flex items-center gap-2"><BookOpen className="h-3.5 w-3.5" /> Biblioteca</div>
+              <div className="flex items-center gap-2"><Plug className="h-3.5 w-3.5" /> Conexões</div>
+              <div className="flex items-center gap-2"><PanelsTopLeft className="h-3.5 w-3.5" /> Modelos</div>
+            </div>
+
+            <div className="pt-2">
+              <div className="mb-3 text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8a6953]">Ontem</div>
+              <div className="space-y-3 text-[11px] leading-tight text-[#282828]">
+                <div className="truncate">Entendi seu CPF (490.469.018-4...</div>
+                <div className="truncate">Dossiê da empresa 19.657.820...</div>
+                <div className="truncate">Dossiê completo 19.657.820/00...</div>
+                <div className="truncate">Dossiê simples da empresa 19.6...</div>
               </div>
-            ))}
-          </div>
-
-          <div className="mt-4">
-            <div className="mb-2 px-2 text-xs font-medium text-black/40">Fontes</div>
-            <div className="space-y-2 px-2 font-medium text-black/60">
-              <div>Balanços</div>
-              <div>SCR</div>
-              <div>Certidões</div>
-              <div>Processos</div>
             </div>
           </div>
         </aside>
 
-        <main className="flex min-w-0 flex-1 flex-col bg-white">
-          <div className="border-b border-black/5 p-4">
-            <div className="pb-4 text-base font-medium text-[#23342a]">Assistente de crédito</div>
-            <div className="flex gap-2">
-              <span className="rounded-full bg-[#23342a] px-3 py-1 text-xs font-medium text-white">Perguntas</span>
-              <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-black/60">Dossiês</span>
-            </div>
+        <main className="flex min-w-0 flex-1 flex-col bg-[#fcfbf9]">
+          <div className="flex h-12 items-center border-b border-black/10 px-5 font-serif text-base font-medium text-[#23342a]">
+            Nova conversa
           </div>
 
-          <div className="divide-y divide-black/10 p-6">
-            {inboxItems.map((item) => (
-              <div key={item.title} className="relative space-y-1 py-5 first:pt-0">
-                {item.active && <span className="absolute -left-3 top-6 h-1.5 w-1.5 rounded-full bg-[#5E7C8D]" />}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="font-medium text-[#23342a]">{item.title}</div>
-                  <div className="whitespace-nowrap text-xs text-black/40">{item.time}</div>
-                </div>
-                <p className="line-clamp-2 leading-relaxed text-black/60">{item.copy}</p>
-                <div className="mt-2 flex items-center gap-1.5 text-xs text-black/50">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[10px] font-medium text-[#23342a]">
-                    {item.owner[0]}
-                  </span>
-                  <span className="font-medium text-black/80">{item.owner}</span> atualizou agora
-                </div>
+          <div className="flex flex-1 flex-col items-center justify-center px-5 pb-10 pt-8">
+            <div className="mb-8 text-center">
+              <div className="mb-3 text-[9px] font-medium uppercase tracking-[0.22em] text-[#5e7c8d]">Inteligência para decisões de crédito</div>
+              <h3 className="font-serif text-3xl leading-[1.04] text-[#23342a] sm:text-4xl">Análise rigorosa.<br />Decisões mais claras.</h3>
+              <p className="mt-3 text-xs text-[#282828]/70">Consulte dados, avalie riscos e organize evidências para seu crédito.</p>
+            </div>
+
+            <div className="w-full max-w-lg overflow-hidden rounded-lg border border-[#23342a]/45 bg-white shadow-sm">
+              <div className="h-16 px-4 pt-4 text-xs text-black/45">Envie uma mensagem...</div>
+              <div className="flex items-center justify-between border-t border-black/10 px-3 py-2">
+                <Plus className="h-4 w-4 text-[#282828]/70" />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#23342a] text-white"><ArrowUp className="h-3.5 w-3.5" /></span>
               </div>
-            ))}
+            </div>
           </div>
         </main>
       </div>
@@ -235,7 +218,7 @@ function CreditStudyMockup({ activeTab }: { activeTab: "dossiers" | "research" |
         : ["Limite sugerido registrado", "Fontes anexadas ao parecer", "Revisão humana pendente"];
 
   return (
-    <div className="w-full max-w-[47rem] overflow-hidden rounded-xl border border-black/10 bg-[#f8fbf9] text-[#23342a] shadow-2xl">
+    <div className="w-full max-w-[47rem] overflow-hidden rounded-xl border border-black/10 bg-[#f8fbf9] text-[#282828] shadow-2xl">
       <div className="flex items-center justify-between gap-4 border-b border-black/10 bg-white px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
@@ -263,14 +246,14 @@ function CreditStudyMockup({ activeTab }: { activeTab: "dossiers" | "research" |
         </div>
         <div className="mb-3 rounded-lg bg-[#edf2ef] p-3">
           <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-black/40">Pergunta</div>
-          <div className="text-sm font-medium leading-relaxed text-[#23342a]">{aiResponse.question}</div>
+          <div className="text-sm font-medium leading-relaxed text-[#282828]">{aiResponse.question}</div>
         </div>
-        <p className="text-sm leading-relaxed text-[#23342a]/78">{aiResponse.answer}</p>
+        <p className="text-sm leading-relaxed text-[#282828]/78">{aiResponse.answer}</p>
         <div className="mt-4 border-t border-black/10 pt-3">
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-black/40">Connectors</div>
           <div className="flex flex-wrap gap-2">
             {connectors.map((connector) => (
-              <span key={connector} className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-[#fbfdfb] px-2.5 py-1 text-[11px] font-semibold text-[#23342a]/70">
+              <span key={connector} className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-[#fbfdfb] px-2.5 py-1 text-[11px] font-semibold text-[#282828]/70">
                 <Database className="h-3 w-3 text-[#2F8B6D]" />
                 {connector}
               </span>
@@ -323,7 +306,7 @@ function CreditStudyMockup({ activeTab }: { activeTab: "dossiers" | "research" |
                     <span className="text-[10px] font-semibold uppercase tracking-wide text-black/40">{source}</span>
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${status === "Conferida" || status === "Sem match" ? "bg-[#E4F5EE] text-[#17664E]" : "bg-[#F3E6CF] text-[#9B641C]"}`}>{status}</span>
                   </div>
-                  <div className="mt-1 text-xs font-medium leading-snug text-[#23342a]">{title}</div>
+                  <div className="mt-1 text-xs font-medium leading-snug text-[#282828]">{title}</div>
                 </div>
               ))}
             </div>
@@ -342,7 +325,7 @@ function CreditStudyMockup({ activeTab }: { activeTab: "dossiers" | "research" |
           <div className="mb-4 text-xs font-semibold uppercase tracking-wide text-black/55">Validações</div>
           <div className="space-y-2">
             {finalChecks.map((check) => (
-              <div key={check} className="flex items-start gap-2 rounded-lg bg-white p-2.5 text-[11px] font-medium leading-snug text-[#23342a]/75">
+              <div key={check} className="flex items-start gap-2 rounded-lg bg-white p-2.5 text-[11px] font-medium leading-snug text-[#282828]/75">
                 <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#2F8B6D]" />
                 {check}
               </div>
@@ -634,7 +617,7 @@ function FeatureVisual({ type }: { type: string }) {
           <div key={item} className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#fbfdfb] p-3">
             <FileCheck2 className="h-5 w-5 text-[#5E7C8D]" />
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-medium text-[#23342a]">{item}</div>
+              <div className="text-sm font-medium text-[#282828]">{item}</div>
               <div className="mt-1 h-1.5 rounded-full bg-black/10">
                 <div className="h-full rounded-full bg-[#5f7768]" style={{ width: `${78 - index * 12}%` }} />
               </div>
@@ -649,7 +632,7 @@ function FeatureVisual({ type }: { type: string }) {
     return (
       <div className="flex h-full flex-col justify-end gap-3 bg-[#23342a] p-5 text-sm">
         <div className="max-w-[82%] rounded-2xl bg-white/10 p-3 text-white/80">Explique os riscos do CNPJ em 3 pontos.</div>
-        <div className="ml-auto max-w-[86%] rounded-2xl bg-white p-3 text-[#23342a] shadow-sm">
+        <div className="ml-auto max-w-[86%] rounded-2xl bg-white p-3 text-[#282828] shadow-sm">
           Encontrei compressão de liquidez, concentração em fornecedor e passivo trabalhista relevante.
         </div>
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-white/60">
@@ -670,8 +653,8 @@ function FeatureVisual({ type }: { type: string }) {
           { label: "LGPD", icon: Lock },
         ].map((item) => (
           <div key={item.label} className="flex flex-col justify-between rounded-2xl border border-black/5 bg-[#fbfdfb] p-4">
-            <item.icon className="h-5 w-5 text-[#23342a]/50" />
-            <span className="text-sm font-medium text-[#23342a]">{item.label}</span>
+            <item.icon className="h-5 w-5 text-[#282828]/50" />
+            <span className="text-sm font-medium text-[#282828]">{item.label}</span>
           </div>
         ))}
       </div>
@@ -684,21 +667,24 @@ export default function Home() {
   const [creditViewTab, setCreditViewTab] = useState<CreditViewTab>("dossiers");
 
   return (
-    <div className="min-h-screen bg-white text-[#23342a] selection:bg-[#23342a] selection:text-[#f6faf7]">
+    <div className="min-h-screen bg-white text-[#282828] selection:bg-[#282828] selection:text-[#f6faf7]">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <a href="#" className="font-serif text-3xl text-[#23342a]">
-          Nivi.
+        <a href="#" aria-label="Nivi" className="flex items-center">
+          <img src={niviLogoAsset} alt="" className="h-10 w-auto shrink-0" />
         </a>
         <div className="hidden items-center gap-8 md:flex">
-          <a href="#about" className="text-base font-medium text-[#23342a] transition-opacity hover:opacity-70">
+          <a href="#about" className="text-base font-medium text-[#282828] transition-opacity hover:opacity-70">
             Sobre
           </a>
-          <a href="#pricing" className="text-base font-medium text-[#23342a] transition-opacity hover:opacity-70">
+          <a href="#pricing" className="text-base font-medium text-[#282828] transition-opacity hover:opacity-70">
             Planos
+          </a>
+          <a href="#faq" className="text-base font-medium text-[#282828] transition-opacity hover:opacity-70">
+            FAQ
           </a>
         </div>
         <div className="flex items-center gap-4">
-          <a href={whatsappHref} target="_blank" rel="noreferrer" className="hidden text-base font-medium text-[#23342a] transition-opacity hover:opacity-70 sm:block">
+          <a href={whatsappHref} target="_blank" rel="noreferrer" className="hidden text-base font-medium text-[#282828] transition-opacity hover:opacity-70 sm:block">
             Fale conosco
           </a>
           <a href={demoHref} target="_blank" rel="noreferrer" className="rounded-full bg-[#282828] px-5 py-2.5 text-base font-medium text-white transition-colors hover:bg-[#1f1f1f]">
@@ -731,14 +717,14 @@ export default function Home() {
             </h1>
 
             <p className="mb-10 max-w-lg text-lg font-light leading-relaxed text-white/80">
-              Elimine horas de trabalho operacional. A Nivi automatiza pesquisas, consolida informações e cria estudos de crédito alinhados à política da instituição.
+              A Nivi é uma assistente de IA para crédito: automatiza pesquisas, consolida informações e entrega estudos no padrão da sua instituição.
             </p>
 
             <div className="inline-flex w-full max-w-md overflow-hidden rounded-xl border border-white/25 bg-white text-base font-medium shadow-sm sm:w-auto">
               <a href="#about" className="flex flex-1 items-center justify-center bg-[#23342a] px-6 py-3 text-white transition-colors hover:bg-[#23342a]/90 sm:flex-none">
                 Conheça a solução
               </a>
-              <a href={demoHref} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center px-6 py-3 text-[#23342a] transition-colors hover:bg-[#f6faf7] sm:flex-none">
+              <a href={demoHref} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center px-6 py-3 text-[#282828] transition-colors hover:bg-[#f6faf7] sm:flex-none">
                 Agendar demo
               </a>
             </div>
@@ -758,7 +744,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-8">
         <div className="flex flex-wrap items-center justify-center gap-10 opacity-70 grayscale md:justify-between">
           {partnerLogos.map((logo) => (
-            <span key={logo} className="font-serif text-2xl text-[#23342a]/80">
+            <span key={logo} className="font-serif text-2xl text-[#282828]/80">
               {logo}
             </span>
           ))}
@@ -768,20 +754,20 @@ export default function Home() {
       <section id="about" className="bg-[#edf3ef] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-16 max-w-2xl">
-            <h2 className="mb-6 font-serif text-4xl leading-[1.1] text-[#23342a] sm:text-5xl">
-              Tudo o que seu analista precisa, em um único lugar
+            <h2 className="mb-6 font-serif text-4xl leading-[1.1] text-[#282828] sm:text-5xl">
+              Com um único prompt, você já tem o dossiê completo no modelo da sua instituição.
             </h2>
-            <p className="mb-6 text-lg font-light leading-relaxed text-[#23342a]/70">
-              A Nivi consulta mais de 300 fontes, organiza documentos, cruza informações e responde perguntas durante a análise, eliminando tarefas operacionais para que seu time decida com mais contexto e agilidade
+            <p className="mb-6 text-lg font-light leading-relaxed text-[#282828]/70">
+              A Nivi gera o dossiê completo no modelo da instituição e, com as fontes conectadas de uma vez, também executa pesquisas cadastrais, checagens de compliance, análises setoriais e jurídicas para uma decisão de crédito mais rápida e assertiva.
             </p>
-            <a href="#scale" className="inline-flex items-center gap-1.5 text-base font-medium text-[#23342a] transition-opacity hover:opacity-70">
+            <a className="inline-flex items-center gap-1.5 text-base font-medium text-[#282828] transition-opacity hover:opacity-70">
               Ver como funciona <ArrowRight className="h-4 w-4" />
             </a>
           </div>
 
           <div className="mx-auto max-w-[90rem]">
           <div className="mb-4 flex overflow-x-auto px-2 sm:px-4">
-            <div className="inline-flex items-center gap-1 rounded-2xl border border-[#23342a]/10 bg-[#2f4639]/90 p-1.5 shadow-[0_6px_18px_rgba(0,0,0,0.2)] backdrop-blur-sm">
+            <div className="inline-flex items-center gap-1 rounded-2xl border border-black/10 bg-[#4b4b4b] p-1.5 shadow-[0_6px_18px_rgba(0,0,0,0.18)] backdrop-blur-sm">
               {[
                 { id: "dossiers", label: "Dossiês", icon: FileText },
                 { id: "research", label: "Pesquisas", icon: Search },
@@ -794,7 +780,7 @@ export default function Home() {
                   key={tab.id}
                   type="button"
                   onClick={() => setCreditViewTab(tab.id as CreditViewTab)}
-                  className={`flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${creditViewTab === tab.id ? "bg-[#18231d] text-white" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+                  className={`flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${creditViewTab === tab.id ? "bg-[#1f1f1f] text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
                 >
                   <tab.icon className="h-3.5 w-3.5" />
                   {tab.label}
@@ -849,7 +835,7 @@ export default function Home() {
         </div>
 
         <svg
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[330px] w-full text-[#23342a]/18"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[330px] w-full text-[#282828]/18"
           viewBox="0 0 1440 330"
           fill="none"
           preserveAspectRatio="none"
@@ -860,11 +846,11 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="max-w-2xl">
-            <div className="mb-5 text-sm font-medium uppercase tracking-wider text-[#23342a]/60">Escale sua operação</div>
-            <h2 className="mb-7 max-w-3xl font-serif text-4xl leading-[1.05] text-[#23342a] sm:text-5xl lg:text-[3.4rem]">
+            <div className="mb-5 text-sm font-medium uppercase tracking-wider text-[#282828]/60">Escale sua operação</div>
+            <h2 className="mb-7 max-w-3xl font-serif text-4xl leading-[1.05] text-[#282828] sm:text-5xl lg:text-[3.4rem]">
               Quando seu analista ganha tempo, a produtividade da equipe aumenta.
             </h2>
-            <p className="mb-20 max-w-xl text-lg font-light leading-relaxed text-[#23342a]/70">
+            <p className="mb-20 max-w-xl text-lg font-light leading-relaxed text-[#282828]/70">
               A Nivi ajuda analistas, gerentes e comitês a reduzir tempo de coleta, padronizar pareceres e encontrar sinais que passam batido.
             </p>
           </div>
@@ -875,8 +861,8 @@ export default function Home() {
               ["2x", "pelo menos mais oportunidades analisadas pelo mesmo time."],
             ].map(([value, copy]) => (
               <div key={value} className="min-h-36 border-l border-[#23342a]/12 pl-6">
-                <div className="mb-3 text-4xl font-semibold leading-none text-[#23342a]">{value}</div>
-                <div className="max-w-[190px] text-base font-light leading-relaxed text-[#23342a]/68">{copy}</div>
+                <div className="mb-3 text-4xl font-semibold leading-none text-[#282828]">{value}</div>
+                <div className="max-w-[190px] text-base font-light leading-relaxed text-[#282828]/68">{copy}</div>
               </div>
             ))}
           </div>
@@ -884,21 +870,21 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-20">
-        <h2 className="mb-12 font-serif text-3xl leading-[1.15] text-[#23342a] sm:text-4xl lg:text-[2.75rem]">
+        <h2 className="mb-12 font-serif text-3xl leading-[1.15] text-[#282828] sm:text-4xl lg:text-[2.75rem]">
           “A Nivi tira a análise do modo caça-documento e coloca o time direto na decisão.”
         </h2>
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#23342a] font-serif text-xl text-white">G</div>
           <div>
-            <div className="text-base font-medium text-[#23342a]">Guilherme Bausas</div>
-            <div className="text-base font-light text-[#23342a]/60">Head de Crédito, Larca Capital</div>
+            <div className="text-base font-medium text-[#282828]">Guilherme Bausas</div>
+            <div className="text-base font-light text-[#282828]/60">Head de Crédito, Larca Capital</div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <section id="faq" className="mx-auto max-w-7xl px-6 py-24">
         <div className="grid gap-14 border-t border-[#23342a]/10 pt-20 lg:grid-cols-[1fr_0.92fr] lg:gap-24">
-          <h2 className="font-serif text-4xl leading-[1.05] text-[#23342a] sm:text-5xl lg:text-[3.4rem]">
+          <h2 className="font-serif text-4xl leading-[1.05] text-[#282828] sm:text-5xl lg:text-[3.4rem]">
             Perguntas e respostas
           </h2>
 
@@ -916,17 +902,17 @@ export default function Home() {
                     onClick={() => setOpenFaq(isOpen ? null : index)}
                     className="group flex w-full items-center justify-between gap-8 py-7 text-left"
                   >
-                    <span className="text-lg font-light leading-relaxed text-[#23342a] transition-opacity group-hover:opacity-70">
+                    <span className="text-lg font-light leading-relaxed text-[#282828] transition-opacity group-hover:opacity-70">
                       {faq.question}
                     </span>
                     <Plus
-                      className={`h-4 w-4 shrink-0 stroke-[1.5] text-[#23342a]/45 transition-transform duration-200 ${
+                      className={`h-4 w-4 shrink-0 stroke-[1.5] text-[#282828]/45 transition-transform duration-200 ${
                         isOpen ? "rotate-45" : ""
                       }`}
                     />
                   </button>
                   {isOpen && (
-                    <p id={answerId} className="-mt-2 pb-7 pr-12 text-base font-light leading-relaxed text-[#23342a]/68">
+                    <p id={answerId} className="-mt-2 pb-7 pr-12 text-base font-light leading-relaxed text-[#282828]/68">
                       {faq.answer}
                     </p>
                   )}
@@ -938,7 +924,7 @@ export default function Home() {
       </section>
 
       <section id="pricing" className="mx-auto max-w-7xl px-6 py-24">
-        <h2 className="mb-16 max-w-4xl font-serif text-4xl leading-[1.05] text-[#23342a] sm:text-5xl lg:text-[3.4rem]">
+        <h2 className="mb-16 max-w-4xl font-serif text-4xl leading-[1.05] text-[#282828] sm:text-5xl lg:text-[3.4rem]">
           Planos para usar a Nivi como assistente.
         </h2>
         <div className="grid gap-6 lg:grid-cols-3">
@@ -948,21 +934,21 @@ export default function Home() {
               className="flex min-h-[37rem] flex-col rounded-[1.35rem] border border-[#23342a]/8 bg-[#f3f2f1] p-8 shadow-[0_1px_2px_rgba(35,52,42,0.06)]"
             >
               <div className="mb-4 flex items-center justify-between gap-4">
-                <h3 className="text-2xl font-medium text-[#23342a]">{plan.name}</h3>
+                <h3 className="text-2xl font-medium text-[#282828]">{plan.name}</h3>
                 {plan.highlighted && (
-                  <span className="rounded-full bg-[#cbd8d0] px-4 py-1 text-xs font-semibold text-[#23342a]">Mais popular</span>
+                  <span className="rounded-full bg-[#cbd8d0] px-4 py-1 text-xs font-semibold text-[#282828]">Mais popular</span>
                 )}
               </div>
               <div className="mb-6 flex items-end gap-1">
-                <span className="text-[2rem] font-medium leading-none text-[#23342a]">{plan.price}</span>
-                {plan.period && <span className="pb-1 text-base font-light text-[#23342a]/60">{plan.period}</span>}
+                <span className="text-[2rem] font-medium leading-none text-[#282828]">{plan.price}</span>
+                {plan.period && <span className="pb-1 text-base font-light text-[#282828]/60">{plan.period}</span>}
               </div>
-              <p className="mb-10 min-h-[3.5rem] max-w-xs text-base font-light leading-relaxed text-[#23342a]/68">{plan.copy}</p>
+              <p className="mb-10 min-h-[3.5rem] max-w-xs text-base font-light leading-relaxed text-[#282828]/68">{plan.copy}</p>
 
               <ul className="mb-10 space-y-5">
                 {plan.items.map((item) => (
-                  <li key={item} className="flex items-start gap-4 text-base font-light leading-snug text-[#23342a]/72">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 stroke-[1.5] text-[#23342a]/45" />
+                  <li key={item} className="flex items-start gap-4 text-base font-light leading-snug text-[#282828]/72">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 stroke-[1.5] text-[#282828]/45" />
                     {item}
                   </li>
                 ))}
@@ -986,28 +972,28 @@ export default function Home() {
 
       <section id="invite" className="mx-auto max-w-7xl px-6 py-20">
         <div className="rounded-[2rem] bg-[#f3f2f1] px-8 py-20 text-center">
-          <h2 className="mx-auto mb-6 max-w-2xl font-serif text-4xl leading-[1.1] text-[#23342a] sm:text-5xl">
+          <h2 className="mx-auto mb-6 max-w-2xl font-serif text-4xl leading-[1.1] text-[#282828] sm:text-5xl">
             Pronto para acelerar o crédito da sua companhia com a Nivi?
           </h2>
-          <p className="mx-auto mb-10 max-w-xl text-lg font-light leading-relaxed text-[#23342a]/70">
+          <p className="mx-auto mb-10 max-w-xl text-lg font-light leading-relaxed text-[#282828]/70">
             Agende uma demonstração e veja como a Nivi acelera a análise de crédito da sua equipe com documentos reais.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a href={demoHref} target="_blank" rel="noreferrer" className="w-full rounded-full bg-[#282828] px-8 py-3 text-center text-base font-medium text-white shadow-md transition-colors hover:bg-[#1f1f1f] sm:w-auto">
               Agendar demo
             </a>
-            <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#23342a] transition-colors hover:bg-black/5 sm:w-auto">
+            <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-medium text-[#282828] transition-colors hover:bg-black/5 sm:w-auto">
               Fale conosco <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
       </section>
 
-      <footer className="mt-10 border-t border-black/[0.05] bg-[#f3f2f1] pb-12 pt-20">
+      <footer className="mt-10 border-t border-white/10 bg-[#1f3027] pb-12 pt-20">
         <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-6">
           <div className="md:col-span-2">
-            <div className="mb-4 font-serif text-3xl text-[#23342a]">Nivi.</div>
-            <p className="max-w-md text-base font-light leading-relaxed text-[#23342a]/60">
+            <div className="mb-4 font-serif text-3xl text-white">Nivi.</div>
+            <p className="max-w-md text-base font-light leading-relaxed text-white/62">
               Sua assistente para otimizar sua operação e ir para o próximo nível.
             </p>
           </div>
@@ -1015,11 +1001,11 @@ export default function Home() {
             ["Produto", "Features", "Planos"],
           ].map(([heading, ...links]) => (
             <div key={heading}>
-              <div className="mb-4 text-base font-medium text-[#23342a]">{heading}</div>
+              <div className="mb-4 text-base font-medium text-white">{heading}</div>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link}>
-                    <a href={link === "Features" ? "#about" : link === "Planos" ? "#pricing" : "#"} className="text-base font-light text-[#23342a]/60 transition-colors hover:text-[#23342a]">
+                    <a href={link === "Features" ? "#about" : link === "Planos" ? "#pricing" : "#"} className="text-base font-light text-white/62 transition-colors hover:text-white">
                       {link}
                     </a>
                   </li>
@@ -1028,24 +1014,24 @@ export default function Home() {
             </div>
           ))}
           <div>
-            <div className="mb-4 text-base font-medium text-[#23342a]">Social</div>
+            <div className="mb-4 text-base font-medium text-white">Social</div>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-base font-light text-[#23342a]/60 transition-colors hover:text-[#23342a]">
+                <a href="#" className="text-base font-light text-white/62 transition-colors hover:text-white">
                   LinkedIn
                 </a>
               </li>
             </ul>
           </div>
           <div className="md:col-span-2">
-            <div className="mb-4 text-base font-medium text-[#23342a]">Contato</div>
-            <div className="space-y-3 text-base font-light leading-relaxed text-[#23342a]/60">
+            <div className="mb-4 text-base font-medium text-white">Contato</div>
+            <div className="space-y-3 text-base font-light leading-relaxed text-white/62">
               <p>(11) 97172-8811</p>
               <p>Rua Hungria, 888, 8º andar - Jardim Europa, São Paulo, SP 01455-905, BR</p>
             </div>
           </div>
         </div>
-        <div className="mx-auto mt-16 flex max-w-7xl flex-col gap-4 px-6 text-sm font-light text-[#23342a]/50 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto mt-16 flex max-w-7xl flex-col gap-4 px-6 text-sm font-light text-white/45 md:flex-row md:items-center md:justify-between">
           <span>© {new Date().getFullYear()} Nivi. Todos os direitos reservados.</span>
           <span>Feita para times de crédito que preferem evidência a achismo.</span>
         </div>
