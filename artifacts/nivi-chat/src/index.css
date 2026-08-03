@@ -50,35 +50,35 @@
 }
 
 :root {
-  --background: 320 9% 94%;
-  --foreground: 330 8% 14%;
+  --background: 145 20% 94%;
+  --foreground: 145 19% 17%;
 
-  --card: 320 14% 97%;
-  --card-foreground: 330 8% 14%;
-  --card-border: 320 8% 88%;
+  --card: 140 25% 98%;
+  --card-foreground: 145 19% 17%;
+  --card-border: 145 14% 88%;
 
-  --popover: 320 14% 97%;
-  --popover-foreground: 330 8% 14%;
-  --popover-border: 320 8% 88%;
+  --popover: 140 25% 98%;
+  --popover-foreground: 145 19% 17%;
+  --popover-border: 145 14% 88%;
 
-  --primary: 330 8% 14%;
-  --primary-foreground: 320 14% 97%;
+  --primary: 145 19% 17%;
+  --primary-foreground: 140 25% 98%;
   
-  --secondary: 320 11% 89%;
-  --secondary-foreground: 330 8% 14%;
+  --secondary: 145 18% 89%;
+  --secondary-foreground: 145 19% 17%;
 
-  --muted: 320 11% 89%;
-  --muted-foreground: 330 6% 44%;
+  --muted: 145 18% 89%;
+  --muted-foreground: 145 12% 40%;
 
   --accent: 204 20% 46%;
-  --accent-foreground: 320 14% 97%;
+  --accent-foreground: 140 25% 98%;
 
   --destructive: 0 70% 45%;
-  --destructive-foreground: 320 14% 97%;
+  --destructive-foreground: 140 25% 98%;
 
-  --border: 320 8% 86%;
-  --input: 320 8% 82%;
-  --ring: 330 8% 14%;
+  --border: 145 13% 86%;
+  --input: 145 12% 82%;
+  --ring: 145 19% 17%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: 'Newsreader', serif;
